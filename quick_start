@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "Loading Stellopt"
+module load mod_stellopt &&
+module load stellopt &&
+echo "Loading MATLAB"
+module load matlab
+echo "Done"
