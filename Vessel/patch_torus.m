@@ -18,5 +18,6 @@ shading faceted;                        % provides shading of the torus based on
 colormap('parula');                     % change color map used
 title('Torus');                         % titles the graph
 xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
+
 % https://www.mathworks.com/matlabcentral/answers/95230-how-do-i-plot-a-toroid-in-matlab
 % Used MATLAB Introduction to Patch Objects, Multifaceted Patches, patch,surf2patch, shading, and colormap help pages
