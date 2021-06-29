@@ -3,7 +3,7 @@ function [] = w7x_view_1()
     w7xDivFile = 'w7x_divertor_op12b_fullres.dat';  % names data file
     w7xDivStr = importdata(w7xDivFile, ' ', 3);     % imports 3 column data from file
     w7xDivData = w7xDivStr.data;                    % extracts data from file
-    nVertices = 33340;                              % sets number of vertices
+    nVertices = size(;                              % sets number of vertices
 
     w7xDiv.Vertices = w7xDivData(1:nVertices,:);    % sets vertice data as the first 33340 lines of data
     w7xDiv.Faces = w7xDivData(nVertices+1:end,:);   % sets face data as lines 33341 to the end
