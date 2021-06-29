@@ -19,21 +19,26 @@ torus.vertices(:,1) = reshape(vertices.x,[a,1]);
 torus.vertices(:,2) = reshape(vertices.y,[a,1]);
 torus.vertices(:,3) = reshape(vertices.z,[a,1]);
 
-% plot of the torus points
-plot3(torus.vertices(:,1),torus.vertices(:,2),torus.vertices(:,3), 'linestyle', 'none', 'marker', '.')
-daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
-title('Torus');                         % titles the graph
-xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
-
 %{
-faces = delaunayTriangulation(vertices);
-
-torus.Vertices = vertices;
-torus.Faces = faces.ConnectivityList;
-
-patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-view(3);                                % view in 3D
+% plot of the torus points
+%plot3(torus.vertices(:,1),torus.vertices(:,2),torus.vertices(:,3), 'linestyle', 'none', 'marker', '.')
+%plot3(torus.vertices(1:17:end,1),torus.vertices(1:17:end,2),torus.vertices(1:17:end,3), 'linestyle', 'none', 'marker', '.')
 daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
 title('Torus');                         % titles the graph
 xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
 %}
+
+% first vertex for each face / initialize the array
+torus.faces(:,1) = [1:a]; %1:a];
+% lower triangle faces
+torus.faces(1:a,2) = [torus.faces(1:a,1) + 1];              % the second vertex for each lower triangle equals n+1
+torus.faces(t-1:t-1:a,2) = [torus.faces(t-1:t-1:a,1) - (t-2)];  % every t-1 elements, the second vertex of the lower triangle equals n-3
+torus.faces(1:a,3) = [torus.faces(1:a,1) + (t)];              % the third vertex for each lower triangle equals n+5
+torus.faces(t-1:t-1:a,3) = [torus.faces(t-1:t-1:a,1) + 1];  % every t-1 elements, the third vertex of the lower triangle equals n+1
+torus.faces(a-t+2:end,3) = [1:t-1];
+
+patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+view(3)                                 % view in 3D
+daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
+title('Torus');                         % titles the graph
+xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
