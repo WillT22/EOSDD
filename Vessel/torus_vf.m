@@ -30,14 +30,24 @@ xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
 
 % first vertex for each face / initialize the array
 torus.faces(:,1) = [1:a]; %1:a];
-% lower triangle faces
-torus.faces(1:a,2) = [torus.faces(1:a,1) + 1];              % the second vertex for each lower triangle equals n+1
-torus.faces(t-1:t-1:a,2) = [torus.faces(t-1:t-1:a,1) - (t-2)];  % every t-1 elements, the second vertex of the lower triangle equals n-3
-torus.faces(1:a,3) = [torus.faces(1:a,1) + (t)];              % the third vertex for each lower triangle equals n+5
-torus.faces(t-1:t-1:a,3) = [torus.faces(t-1:t-1:a,1) + 1];  % every t-1 elements, the third vertex of the lower triangle equals n+1
-torus.faces(a-t+2:end,3) = [1:t-1];
+% upper triangular faces
+    % normal
+    torus.faces(1:a,2) = [torus.faces(1:a,1) + 1];                  % the second vertex for each upper triangle equals n+1
+    torus.faces(1:a,3) = [torus.faces(1:a,1) + t];                  % the third vertex for each upper triangle equals n+t
+    % connect poloidally (row t-1 to row 1)
+    torus.faces(t-1:t-1:a,2) = [torus.faces(t-1:t-1:a,1) - (t-2)];  % every t-1 elements, the second vertex of the upper triangle equals n-3
+    torus.faces(t-1:t-1:a,3) = [torus.faces(t-1:t-1:a,1) + 1];      % every t-1 elements, the third vertex of the upper triangle equals n+1
+    % connect toroidally (column p-1 to column 1)
+    torus.faces(a-(t-2):end,3) = [torus.faces(a-(t-2):end,1)-a+t];  % to connect the last column of vertices with the first, the third vertex equals n-a+t
+    torus.faces(a,3) = [1];                                         % the last vertex of the third vertex column is always index 1
+%lower triangular faces
+    % normal
+    % connect poloidally (row t-1 to row 1)
+    % connect toroidally (column p-1 to column 1)
+    
 
 patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+%patch('Faces',torus.faces(562:end,:),'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
 view(3)                                 % view in 3D
 daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
 title('Torus');                         % titles the graph
