@@ -1,4 +1,4 @@
-function [fvstruct] = toroidal_mesh(r, z, theta, phi)
+function [fvstruct] = toroidal_mesh_h(r, z, theta, phi)
 %TOROIDAL_MESH(r, z, theta, phi)
 % Generates a triangular surface (patch) structure based on grids of
 % r and z coordinates at defined values of theta and phi angles.

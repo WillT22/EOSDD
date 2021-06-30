@@ -11,6 +11,9 @@ function [torus_vd] = torus_vd(r, R, p, t)
           R = 10;
           p = 35;
           t = 17;
+      case 2
+          p = 35;
+          t = 17;
       case 4    
       otherwise         % else throw error
           error('4 inputs are accepted.')
