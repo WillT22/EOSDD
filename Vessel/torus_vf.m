@@ -2,7 +2,7 @@ R = 10;  % outer radius of the torus
 r = 4;  % inner radius of the torus
 
 p = 35;
-t = 16;
+t = 17;
 a = (p-1) * (t-1);
 
 phi = linspace(0,2*pi,p);   % partition as measured in the toroidal direction
@@ -18,14 +18,6 @@ vertices.z = r.*sin(Theta);
 torus.vertices(:,1) = reshape(vertices.x,[a,1]);
 torus.vertices(:,2) = reshape(vertices.y,[a,1]);
 torus.vertices(:,3) = reshape(vertices.z,[a,1]);
-
-%{
-% plot of the vertices
-plot3(torus.vertices(:,1),torus.vertices(:,2),torus.vertices(:,3), 'linestyle', 'none', 'marker', '.')
-daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
-title('Torus');                         % titles the graph
-xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
-%}
 
 % upper triangular faces
     faces.upper(:,1) = [1:a];
@@ -52,29 +44,36 @@ xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
       
 torus.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
 
-% to see the whole torus
-patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graphing Options
 
-% to see the front half of the torus
-% patch('Faces',torus.faces(1:a,:),'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+g_option = 1;
 
-
-% to look at only the lower half of the torus
-%{
-lvertices = find(torus.vertices(:,3) < 0);         % finds every vertex that has a negative z-component
-    lfaces = zeros(size(torus.faces));             % initializes an array of zeros the size of the number of faces
-    n = 0;                                         % initializes the row index for the for function
-    for i=1:2*a                              % for every face,...
-        if ismember(torus.faces(i,1), lInds)       % if the face selected has a first vertex with a negative z-component
+if g_option == 0
+    % Option 0: plot of the vertices
+    plot3(torus.vertices(:,1),torus.vertices(:,2),torus.vertices(:,3), 'linestyle', 'none', 'marker', '.')
+elseif g_option == 1
+    % Option 1: to see the whole torus
+    patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+elseif g_option == 2
+    % Option 2: to see the front half of the torus
+    patch('Faces',torus.faces(1:a,:),'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+elseif g_option == 3
+    % Option 3: to look at only the lower half of the torus
+    lvertices = find(torus.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
+    lfaces = zeros(size(torus.faces));                  % initializes an array of zeros the size of the number of faces
+    n = 0;                                              % initializes the row index for the for function
+    for i=1:2*a                                         % for every face,...
+        if ismember(torus.faces(i,1), lvertices)        % if the face selected has a first vertex with a negative z-component
             n = n + 1;
-            lfaces(n,:) = torus.faces(i,:);        % then add that face to the set of lower faces
+            lfaces(n,:) = torus.faces(i,:);             % then add that face to the set of lower faces
         end
     end
-    torus.faces = lfaces(1:n,:);                   % set faces as only the lower faces
+    torus.faces = lfaces(1:n,:);                  % set faces as only the lower faces
 
-patch('Faces',torus.faces,'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-%}
-
+    patch('Faces',torus.faces,'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+end
+    
 % plot specifications
 view(3)                                 % view in 3D
 daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
