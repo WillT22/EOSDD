@@ -10,7 +10,7 @@ function [] = w7x_view_1()
 
     lInds = find(w7xDiv.Vertices(:,3) < 0);         % finds every vertex that has a negative z-component
     lFaces = zeros(size(w7xDiv.Faces));             % initializes an array of zeros the size of the number of faces
-    nFacesTot = size(w7xDiv.Faces,1);               % finds the number of faces that will be used bt using the size of the first column of faces
+    nFacesTot = size(w7xDiv.Faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
     n = 0;                                          % initializes the row index for the for function
     for i=1:nFacesTot                               % for every face,...
         if ismember(w7xDiv.Faces(i,1), lInds)       % if the face selected has a first vertex with a negative z-component
