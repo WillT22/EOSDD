@@ -28,18 +28,17 @@ function [fvstruct] = toroidal_mesh(r, z, theta, phi)
     elseif length(theta(:)) ~= nPhi
         error('Number of rows of r and z must agree with length of phi');
     elseif length(phi(:)) ~= nTheta
-        error(['Number of columns of r and z must agree with length ' ...
-               'of theta']);
+        error(['Number of columns of r and z must agree with length of theta']);
     end
     
     indArray = reshape(1:nPoints, nTheta, nPhi);
-    upperLefts  = indArray(1:end-1, 1:end-1);
-    upperRights = indArray(1:end-1, 2:end  );
-    lowerLefts  = indArray(2:end,   1:end-1);
-    lowerRights = indArray(2:end,   2:end  );
+    upperLefts  = indArray(1:end-1, 1:end-1);       % upper left vertices of the grid
+    upperRights = indArray(1:end-1, 2:end  );       % upper right vertices of the grid
+    lowerLefts  = indArray(2:end,   1:end-1);       % lower left vertices of the grid
+    lowerRights = indArray(2:end,   2:end  );       % lower right vertices of the grid
     
-    faces = [upperLefts(:)  upperRights(:) lowerLefts(:); ...
-             upperRights(:) lowerRights(:) lowerLefts(:);];
+    faces = [upperLefts(:)  upperRights(:) lowerLefts(:); ...   % makes the upper triangles
+             upperRights(:) lowerRights(:) lowerLefts(:);];     % makes the lower triangles
     
     [~, Phi] = meshgrid(theta, phi);
     x = r.*cos(Phi);

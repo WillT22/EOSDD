@@ -1,9 +1,23 @@
-R = 10;  % outer radius of the torus
-r = 4;  % inner radius of the torus
+function [torus_vd] = torus_vd(r, R, p, t)
+  % r = the inner radius of the torus
+  % R = the outer radius of the torus
+  % p = number of toroidal segments
+  % t = number of poloidal segments
 
-p = 35;
-t = 17;
-a = (p-1) * (t-1);
+  %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
+  switch nargin         % creates a few default options
+      case 0            % if all inputs are clear, use these default parameters
+          r = 4;
+          R = 10;
+          p = 35;
+          t = 17;
+      case 4    
+      otherwise         % else throw error
+          error('4 inputs are accepted.')
+  end
+ 
+ %%%%%%%%%%%%%%%% Create Vertex and Face Data %%%%%%%%%%%%%%%%%
+a = (p-1) * (t-1); % number of vertices that will be used
 
 phi = linspace(0,2*pi,p);   % partition as measured in the toroidal direction
 theta = linspace(0,2*pi,t); % partition as measured in the poloidal direction 
@@ -18,14 +32,6 @@ vertices.z = r.*sin(Theta);
 torus.vertices(:,1) = reshape(vertices.x,[a,1]);
 torus.vertices(:,2) = reshape(vertices.y,[a,1]);
 torus.vertices(:,3) = reshape(vertices.z,[a,1]);
-
-%{
-% plot of the vertices
-plot3(torus.vertices(:,1),torus.vertices(:,2),torus.vertices(:,3), 'linestyle', 'none', 'marker', '.')
-daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
-title('Torus');                         % titles the graph
-xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
-%}
 
 % upper triangular faces
     faces.upper(:,1) = [1:a];
@@ -51,41 +57,5 @@ xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
     faces.lower(end,2) = [1];                                               % the last vertex of the second vertex column is always index 1
       
 torus.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Graphing Options
-
-g_option = 0
-
-if g_option == 0{
-        
-% Option 1: to see the whole torus
-patch(torus, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-
-% to see the front half of the torus
-% patch('Faces',torus.faces(1:a,:),'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-
-
-% to look at only the lower half of the torus
-%{
-lvertices = find(torus.vertices(:,3) < 0);         % finds every vertex that has a negative z-component
-    lfaces = zeros(size(torus.faces));             % initializes an array of zeros the size of the number of faces
-    n = 0;                                         % initializes the row index for the for function
-    for i=1:2*a                              % for every face,...
-        if ismember(torus.faces(i,1), lvertices)       % if the face selected has a first vertex with a negative z-component
-            n = n + 1;
-            lfaces(n,:) = torus.faces(i,:);        % then add that face to the set of lower faces
-        end
-    end
-    torus.faces = lfaces(1:n,:);                   % set faces as only the lower faces
-
-patch('Faces',torus.faces,'Vertices',torus.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-%}
-
-% plot specifications
-view(3)                                 % view in 3D
-daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
-c1 = camlight();
-c1 = camlight();
-title('Torus');                         % titles the graph
-xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
+torus_vd = torus;
+end

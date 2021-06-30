@@ -1,9 +1,24 @@
-R = 10;  % outer radius of the torus
-r = 4;  % inner radius of the torus
-
-p = 35;
-t = 17;
-a = (p-1) * (t-1);
+function torus_vd(r, R, p, t, option)
+  % r = the inner radius of the torus
+  % R = the outer radius of the torus
+  % p = number of toroidal segments
+  % t = number of poloidal segments
+  
+  switch nargin         % creates a few default options
+      case 0            % if all inputs are clear, use these 
+          r = 4;
+          R = 10;
+          p = 36;
+          t = 17;
+          option = 1;
+      case 4
+          option = 1;
+      case 5
+      otherwise 
+          error('5 inputs are accepted.')
+  end
+          
+a = (p-1) * (t-1); % number of vertices that will be used
 
 phi = linspace(0,2*pi,p);   % partition as measured in the toroidal direction
 theta = linspace(0,2*pi,t); % partition as measured in the poloidal direction 
@@ -47,7 +62,7 @@ torus.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphing Options
 
-g_option = 1;
+g_option = option;
 
 if g_option == 0
     % Option 0: plot of the vertices
@@ -81,3 +96,4 @@ c1 = camlight();
 c1 = camlight();
 title('Torus');                         % titles the graph
 xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
+end
