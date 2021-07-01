@@ -18,10 +18,11 @@ f1 = figure();
 
 if g_option == 0
     % Option 0: plot of the vertices
-    plot3(V.vertices(:,1),V.vertices(:,2),V.vertices(:,3), 'linestyle', 'none', 'marker', '.')
+    plot3(V.vertices(:,1),V.vertices(:,2),V.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
 elseif g_option == 1
     % Option 1: to see the whole torus
     patch(V, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+    alpha(0.1);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
     patch('Faces',V.faces(1:nfacetot/2,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
