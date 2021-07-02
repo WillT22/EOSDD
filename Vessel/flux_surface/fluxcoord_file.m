@@ -8,5 +8,5 @@ file_data = [arr_index, flux_co(10).r, arr_index,...            % creates an arr
     flux_co(10).z, arr_index, flux_co(10).phi];
 
 % sets up the format for the file to populate
-fprintf(fileID, 'R(%.0d) = %.12d    Z(%.0d) = %.12d     PHI(%.0d) = %.12d\n', file_data');
+fprintf(fileID, 'R(%.0d) = %20.12d    Z(%.0d) = %20.12d     PHI(%.0d) = %20.12d\n', file_data');
 fclose(fileID); % closes the file
