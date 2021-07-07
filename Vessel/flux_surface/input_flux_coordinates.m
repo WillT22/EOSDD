@@ -1,6 +1,6 @@
 % puts the cylindrical coordinates made by the flux_coordinates function into a .dat file
 
-fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords.dat','w');   % opens the file for modification
+fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords_s2.dat','w');   % opens the file for modification
 
     % DATA
     NR = 201;                                       % Number of radial gridpoints
@@ -19,6 +19,10 @@ fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords.dat','w');   % open
     arr_index = [1:size_r]';                           % creates an array of indecies
     file_data = [arr_index, flux_co(10).r, arr_index,...            % creates an array of alternating index columns and coordinate columns
         flux_co(10).z, arr_index, flux_co(10).phi];
+    
+    arr_index2 = [1:100]';
+    file_data2 = [arr_index2, file_data(10001:10100,2),...
+        arr_index2, file_data(10001:10100,4), arr_index2, file_data(10001:10100,6)];
     
     PHI_END = ceil(max(flux_co(10).phi)*10)/10;     % Maximum distance in the toroidal direction to follow fieldlines
     NPOINC = 120;                                   % Number of toroidal points per-period to output the field line trajectory
@@ -40,8 +44,8 @@ fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords.dat','w');   % open
     fprintf(fileID, 'PHIMIN = %.1f \n', PHIMIN);
     fprintf(fileID, 'PHIMAX = %.10f \n', PHIMAX);
     fprintf(fileID, 'MU = %.1d \n', MU);
-    fprintf(fileID, 'R_START(%.0d) = %20.12e    Z_START(%.0d) = %20.12e    PHI_START(%.0d) = %20.12e\n', file_data');
-    fprintf(fileID, 'PHI_END = %.0d*%.1f \n', size_r, PHI_END);
+    fprintf(fileID, 'R_START(%.0d) = %20.12e    Z_START(%.0d) = %20.12e    PHI_START(%.0d) = %20.12e\n', file_data2');
+    fprintf(fileID, 'PHI_END = %.0d*%.1f \n', size(arr_index2,1), PHI_END);
     fprintf(fileID, 'NPOINC = %.0f \n', NPOINC);
     fprintf(fileID, 'INT_TYPE = ''%s'' \n', INT_TYPE);
     fprintf(fileID, 'FOLLOW_TOL = %.1d \n', FOLLOW_TOL);

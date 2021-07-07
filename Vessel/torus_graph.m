@@ -14,7 +14,7 @@ function torus_graph(V, option)
 
 g_option = option;
 nfacetot = size(V.faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
-figure
+%figure
 
 if g_option == 0
     % Option 0: plot of the vertices
@@ -26,6 +26,7 @@ elseif g_option == 1
 elseif g_option == 2
     % Option 2: to see the front half of the torus
     patch('Faces',V.faces(1:nfacetot/2,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+    alpha(0.1);
 elseif g_option == 3
     % Option 3: to look at only the lower half of the torus
     lvertices = find(V.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
@@ -40,6 +41,7 @@ elseif g_option == 3
     V.faces = lfaces(1:n,:);                  % set faces as only the lower faces
 
     patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+    alpha(0.1);
 end
     
 % plot specifications
