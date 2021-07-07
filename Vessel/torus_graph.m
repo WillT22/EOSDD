@@ -14,7 +14,7 @@ function torus_graph(V, option)
 
 g_option = option;
 nfacetot = size(V.faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
-f1 = figure();
+figure
 
 if g_option == 0
     % Option 0: plot of the vertices

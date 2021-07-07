@@ -41,7 +41,7 @@ fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords.dat','w');   % open
     fprintf(fileID, 'PHIMAX = %.10f \n', PHIMAX);
     fprintf(fileID, 'MU = %.1d \n', MU);
     fprintf(fileID, 'R_START(%.0d) = %20.12e    Z_START(%.0d) = %20.12e    PHI_START(%.0d) = %20.12e\n', file_data');
-    fprintf(fileID, 'PHIEND = %.0d*%.1f \n', size_r, PHI_END);
+    fprintf(fileID, 'PHI_END = %.0d*%.1f \n', size_r, PHI_END);
     fprintf(fileID, 'NPOINC = %.0f \n', NPOINC);
     fprintf(fileID, 'INT_TYPE = ''%s'' \n', INT_TYPE);
     fprintf(fileID, 'FOLLOW_TOL = %.1d \n', FOLLOW_TOL);

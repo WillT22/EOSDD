@@ -11,7 +11,7 @@ face_total = size(torus.faces,1);
     % HEADER:
     fprintf(fileID_t, 'MACHINE: %s \n', vessel_name);   % prints the macine name
     fprintf(fileID_t, 'DATE: %s \n', date);
-    fprintf(fileID_t, 'Vertices: %.0d   Faces: %.0d\n\n', vertice_total, face_total);  
+    fprintf(fileID_t, '%.0d %.0d\n', vertice_total, face_total);  
     % DATA:
     fprintf(fileID_t, '%20.10e %20.10e %20.10e\n', torus.vertices');    % sets up the format for vertex data
     fprintf(fileID_t, '%6.0d %6.0d %6.0d\n', torus.faces');             % sets up the format for face data
