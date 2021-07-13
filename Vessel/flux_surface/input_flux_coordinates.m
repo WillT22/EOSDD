@@ -6,13 +6,13 @@ fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords_s2.dat','w');   % o
     NR = 201;                                       % Number of radial gridpoints
     NZ = 201;                                       % Number of vertical gridpoints
     NPHI = 36;                                      % Number of toroidal gridpoints
-    RMIN = floor(min(flux_co(10).r)*10)/10;         % Minimum extend of radial grid
-    RMAX = ceil(max(flux_co(10).r)*10)/10;          % Maximum extent of radial grid
-    ZMIN = floor(min(flux_co(10).z)*10)/10;         % Minimum extent of vertical grid
-    ZMAX = ceil(max(flux_co(10).z)*10)/10;          % Maximum extent of vertical grid
+    RMIN = 0.5                                      % Minimum extend of radial grid
+    RMAX = 2.0                                      % Maximum extent of radial grid
+    ZMIN = -1.0                                     % Minimum extent of vertical grid
+    ZMAX = 1.0                                      % Maximum extent of vertical grid
     PHIMIN = floor(min(flux_co(10).phi)*10)/10;     % Minimum extent of toroidal grid (overwritten by mgrid or coils file)
     PHIMAX = 2*pi;                                  % Maximum extent of toroidal grid (overwritten by mgrid or coils file)
-    MU = 1E-6;                                         % Fieldline diffusion 
+    MU = 1E-6;                                      % Fieldline diffusion 
     
     % Variable start points for R, Z, and PHI
     size_r = size(flux_co(10).r,1);
