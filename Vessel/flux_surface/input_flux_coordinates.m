@@ -1,15 +1,15 @@
 % puts the cylindrical coordinates made by the flux_coordinates function into a .dat file
 
-fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords_s2.dat','w');   % opens the file for modification
+fileID = fopen('Fieldlines/flux_surface/coords/input_flux_coords.dat','w');   % opens the file for modification
 
     % DATA
     NR = 201;                                       % Number of radial gridpoints
     NZ = 201;                                       % Number of vertical gridpoints
     NPHI = 36;                                      % Number of toroidal gridpoints
-    RMIN = 0.5                                      % Minimum extend of radial grid
-    RMAX = 2.0                                      % Maximum extent of radial grid
-    ZMIN = -1.0                                     % Minimum extent of vertical grid
-    ZMAX = 1.0                                      % Maximum extent of vertical grid
+    RMIN = 0.5;                                     % Minimum extend of radial grid
+    RMAX = 2.0;                                     % Maximum extent of radial grid
+    ZMIN = -1.0;                                    % Minimum extent of vertical grid
+    ZMAX = 1.0;                                     % Maximum extent of vertical grid
     PHIMIN = floor(min(flux_co(10).phi)*10)/10;     % Minimum extent of toroidal grid (overwritten by mgrid or coils file)
     PHIMAX = 2*pi;                                  % Maximum extent of toroidal grid (overwritten by mgrid or coils file)
     MU = 1E-6;                                      % Fieldline diffusion 
@@ -19,11 +19,12 @@ fileID = fopen('SULI21/Vessel/flux_surface/input_flux_coords_s2.dat','w');   % o
     arr_index = [1:size_r]';                           % creates an array of indecies
     file_data = [arr_index, flux_co(10).r, arr_index,...            % creates an array of alternating index columns and coordinate columns
         flux_co(10).z, arr_index, flux_co(10).phi];
-    
-    arr_index2 = [1:100]';
-    file_data2 = [arr_index2, file_data(10001:10100,2),...
-        arr_index2, file_data(10001:10100,4), arr_index2, file_data(10001:10100,6)];
-    
+   %{ 
+    arr_index2 = [1:1000]';
+    file_data2 = [arr_index2, file_data(15001:16000,2),...
+        arr_index2, file_data(15001:16000,4), arr_index2, file_data(15001:16000,6)];
+    %}
+        
     PHI_END = ceil(max(flux_co(10).phi)*10)/10;     % Maximum distance in the toroidal direction to follow fieldlines
     NPOINC = 120;                                   % Number of toroidal points per-period to output the field line trajectory
     INT_TYPE = 'LSODE';                             % Fieldline integration method (NAG, RKH68, LSODE)
