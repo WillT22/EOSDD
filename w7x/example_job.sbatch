@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -n 32
+#SBATCH -n 16
 #SBATCH -p general
 #SBATCH -t 00:20:00
 #SBATCH --mem-per-cpu=2gb
@@ -10,6 +10,6 @@
 module load mod_stellopt
 module load stellopt
 
-mpirun -np 32 xfieldlines # complete call to FIELDLINES here
+mpirun -np 16 xfieldlines # complete call to FIELDLINES here
 
 

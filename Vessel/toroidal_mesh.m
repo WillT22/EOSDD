@@ -1,37 +1,51 @@
-function [torus_vd] = torus_vd(r, R, p, t)
-  % r = the inner radius of the torus
-  % R = the outer radius of the torus
-  % p = number of toroidal segments
-  % t = number of poloidal segments
+function [toroidal_vd] = toroidal_mesh(nescin_file, p, t)
 
-  %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
-      case 0            % if all inputs are clear, use these default parameters
-          r = 4;
-          R = 10;
+      case 1            % if p and t are empty, use default parameters
           p = 35;
           t = 17;
-      case 2
-          p = 35;
-          t = 17;
-      case 4    
+      case 3    
       otherwise         % else throw error
           error('4 inputs are accepted.')
   end
- 
- %%%%%%%%%%%%%%%% Create Vertex and Face Data %%%%%%%%%%%%%%%%%
-a = (p-1) * (t-1); % number of vertices that will be used
 
+% read and extract relevant data from the nescin file
+fileID = fopen(nescin_file);
+fourier_cell = textscan(fileID, '%f%f%f%f%f%f', 'Headerlines', 172, 'CollectOutput', true);
+fclose(fileID);
+fourier_coeff.m = fourier_cell{1}(:,1);
+fourier_coeff.n = fourier_cell{1}(:,2);
+fourier_coeff.crc2 = fourier_cell{1}(:,3);
+fourier_coeff.czs2 = fourier_cell{1}(:,4);
+fourier_coeff.crs2 = fourier_cell{1}(:,5);
+fourier_coeff.czc2 = fourier_cell{1}(:,6);
+clear fourier_cell;
+
+% translate Fourier data into Cartesian coordinates
+a = (p-1) * (t-1); % number of vertices that will be used
 phi = linspace(0,2*pi,p);   % partition as measured in the toroidal direction
 theta = linspace(0,2*pi,t); % partition as measured in the poloidal direction 
-
 [Phi,Theta]=meshgrid(phi(1:p-1),theta(1:t-1)); % creates an array from phi and theta 
 Phi = reshape(Phi,[a,1]);
 Theta = reshape(Theta,[a,1]);
+[M, Theta] = meshgrid(fourier_coeff.m, Theta(:,1));
+[N, Phi] = meshgrid(fourier_coeff.n, Phi(:,1));
 
-torus.vertices(:,1) = (R+r.*cos(Theta)).*cos(Phi);
-torus.vertices(:,2) = (R+r.*cos(Theta)).*sin(Phi);
-torus.vertices(:,3) = r.*sin(Theta);
+% radial component
+r_mnc = repmat(fourier_coeff.crc2',a,1);
+r_elementarr = r_mnc .* cos(M .* Theta + 3 * N .* Phi); 
+coords.r = sum(r_elementarr,2);
+
+% z component
+z_mns = repmat(fourier_coeff.czs2',a,1);
+z_elementarr = z_mns .* sin(M .* Theta + 3 * N .* Phi);
+coords.z = sum(z_elementarr,2);
+
+% create vessel data from Cartesian coordinates
+toroidal_vd.vertices(:,1) = coords.r .* cos(Theta(:,1));
+toroidal_vd.vertices(:,2) = coords.r .* sin(Theta(:,1));
+toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
 
 % upper triangular faces
     faces.upper(:,1) = [1:a];
@@ -56,6 +70,5 @@ torus.vertices(:,3) = r.*sin(Theta);
     faces.lower(end-(t-2):end,3) = [faces.lower(end-(t-2):end,1)-a+t-1];    % for the last t-1 terms, the third vertex equals n-a+t-1
     faces.lower(end,2) = [1];                                               % the last vertex of the second vertex column is always index 1
       
-torus.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
-torus_vd = torus;
+toroidal_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
 end
