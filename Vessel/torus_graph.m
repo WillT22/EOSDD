@@ -22,7 +22,7 @@ if g_option == 0
 elseif g_option == 1
     % Option 1: to see the whole torus
     patch(V, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-    alpha(0.1);
+    %alpha(0.1);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
     patch('Faces',V.faces(1:nfacetot/2,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
@@ -49,6 +49,6 @@ view(3)                                 % view in 3D
 daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
 c1 = camlight();
 c1 = camlight();
-title('Torus');                         % titles the graph
+%title('Torus');                         % titles the graph
 xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
 end
