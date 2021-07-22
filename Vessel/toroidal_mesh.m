@@ -56,8 +56,8 @@ toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
 % triangular faces
     lower_lefts = [1:a-1]';         % indexes the lower left vertices
     upper_lefts = [2:a]';           % indexes the upper left vertices
-    lower_rights = [t+1:a-1,1:t]';  % indexes the lower right vertices
-    upper_rights = [t+2:a,2:t+1]';  % indexes the upper right vertices
+    lower_rights = [t:a-1,1:t-1]';  % indexes the lower right vertices
+    upper_rights = [t:a,2:t]';  % indexes the upper right vertices
     
     faces.upper = [lower_lefts(:) upper_lefts(:) upper_rights(:)];      % makes the upper triangles
     faces.lower = [lower_lefts(:) upper_rights(:) lower_rights(:)];     % makes the lower triangles
