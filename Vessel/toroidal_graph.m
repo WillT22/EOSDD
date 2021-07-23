@@ -30,10 +30,9 @@ elseif g_option == 2
 elseif g_option == 3
     % Option 3: to look at only the lower half of the torus
     lvertices = find(V.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
-    lfaces = zeros(size(V.faces));                  % initializes an array of zeros the size of the number of faces
     n = 0;                                          % initializes the row index for the for function
     for i=1:nfacetot                                % for every face,...
-        if ismember(V.faces(i,1), lvertices)        % if the face selected has a first vertex with a negative z-component
+        if ismember(V.faces(i,2), lvertices)        % if the face selected has a second vertex with a negative z-component
             n = n + 1;
             lfaces(n,:) = V.faces(i,:);             % then add that face to the set of lower faces
         end

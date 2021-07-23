@@ -20,6 +20,8 @@ function [torus_vd] = torus_vd(r, R, p, t)
   end
  
  %%%%%%%%%%%%%%%% Create Vertex and Face Data %%%%%%%%%%%%%%%%%
+p = p+1;
+t = t+1;
 a = p*t; % number of vertices that will be used
 
 phi = linspace(0,2*pi,p); % partition as measured in the toroidal direction 
