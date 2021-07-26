@@ -46,6 +46,9 @@ end
 % plot specifications
 view(3)                                 % view in 3D
 daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
+xlim([-2.2,2.2]);
+ylim([-2.2,2.2]);
+zlim([-1,1]);
 c1 = camlight();
 c1 = camlight();
 %title('Torus');                         % titles the graph
