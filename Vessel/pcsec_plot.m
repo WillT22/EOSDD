@@ -1,6 +1,8 @@
 figure;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/22/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{
 angle = 0;
 p = 180;
 t = 90;
@@ -24,9 +26,9 @@ plot([ntor_test20h.r(start:stop);ntor_test20h.r(start)],[ntor_test20h.z(start:st
 plot([ntor_test25h.r(start:stop);ntor_test25h.r(start)],[ntor_test25h.z(start:stop);ntor_test25h.z(start)]);
 plot([ntor_test30h.r(start:stop);ntor_test30h.r(start)],[ntor_test30h.z(start:stop);ntor_test30h.z(start)]);
 plot([ntor_test35h.r(start:stop);ntor_test35h.r(start)],[ntor_test35h.z(start:stop);ntor_test35h.z(start)]);
+%}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/22/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% angle = 0
 % plot(vactest.R_lines(:,1:360:end)',vactest.Z_lines(:,1:360:end)',".");
 % plot(nvactest.R_lines(:,1:360:end)',nvactest.Z_lines(:,1:360:end)',".");
 %{

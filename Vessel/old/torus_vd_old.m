@@ -1,4 +1,4 @@
-function [torus_vd] = torus_vd(r, R, p, t)
+function [torus_vd] = torus_vd_old(r, R, p, t)
   % r = the inner radius of the torus
   % R = the outer radius of the torus
   % p = number of toroidal segments
@@ -20,10 +20,12 @@ function [torus_vd] = torus_vd(r, R, p, t)
   end
  
  %%%%%%%%%%%%%%%% Create Vertex and Face Data %%%%%%%%%%%%%%%%%
+p = p+1;
+t = t+1;
 a = p*t; % number of vertices that will be used
 
-phi = linspace(0,2*pi,p+1); % partition as measured in the toroidal direction 
-theta = linspace(0,2*pi,t+1);   % partition as measured in the poloidal direction
+phi = linspace(0,2*pi,p); % partition as measured in the toroidal direction 
+theta = linspace(0,2*pi,t);   % partition as measured in the poloidal direction
 
 [Phi, Theta]=meshgrid(phi(1:p),theta(1:t)); % creates an array from phi and theta 
 Phi = reshape(Phi,[a,1]);
@@ -34,16 +36,13 @@ torus_vd.vertices(:,2) = (R+r.*cos(Theta)).*sin(Phi);
 torus_vd.vertices(:,3) = r.*sin(Theta);
 
 % triangular faces
-    % lower triangles:
-    faces.lower(:,1) = [1:a];
-    faces.lower(:,2) = [2:a,1];
-        faces.lower(t:t:end,2) = [faces.lower(t:t:end,1)-(t-1)]; % exceptions
-    faces.lower(:,3) = [t+1:a,1:t];
-    % upper triangles
-    faces.upper(:,1) = [2:a+1];
-        faces.upper(t:t:end,1) = [faces.upper(t:t:end,1)-t];     % exceptions
-    faces.upper(:,2) = [faces.upper(1:end-t,1)+t;(2:t)';1];
-    faces.upper(:,3) = [t+1:a,1:t];
-   
+    lower_lefts = [1:a-1]';         % indexes the lower left vertices
+    upper_lefts = [2:a]';           % indexes the upper left vertices
+    lower_rights = [t:a-1,1:t-1]';  % indexes the lower right vertices
+    upper_rights = [t+1:a,2:t]';    % indexes the upper right vertices
+    
+    faces.upper = [lower_lefts(:) upper_lefts(:) upper_rights(:)];      % makes the upper triangles
+    faces.lower = [lower_lefts(:) upper_rights(:) lower_rights(:)];     % makes the lower triangles
+    
 torus_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
 end

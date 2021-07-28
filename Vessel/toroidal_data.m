@@ -1,15 +1,16 @@
-function toroidal_data(toroidal_structure)
+%function toroidal_data(toroidal_structure)
 % saves torus vertice/face data as a .dat file
-fileID = fopen('../../p/stellopt/ANALYSIS/wteague/Vessel/toroidal_vessel_29.dat','w');           % opens the file for modification
+toroidal_structure = ntor_test05h
+fileID = fopen('./SULI21/Vessel/tv_05h.dat','w');           % opens the file for modification
 
-vessel_name = 'NCSX Ex Torus Vessel';
+vessel_name = 'Toroidal Vessel Coil-Plasma Separation 05cm';
 date = datestr(now, 'mmm-dd-yyyy');
-vertice_total = size(toroidal_structure.vertices,1);                           % creates an array of indecies
+vertice_total = size(toroidal_structure.vertices,1);       % creates an array of indecies
 face_total = size(toroidal_structure.faces,1);
 
 % prints to the file
     % HEADER:
-    fprintf(fileID, 'MACHINE: %s \n', vessel_name);   % prints the macine name
+    fprintf(fileID, 'MACHINE: %s \n', vessel_name);   % prints the machine name
     fprintf(fileID, 'DATE: %s \n', date);
     fprintf(fileID, '%.0d %.0d\n', vertice_total, face_total);  
     % DATA:
