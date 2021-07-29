@@ -1,6 +1,6 @@
 % puts the cylindrical coordinates made by the flux_coordinates function into a .dat file
 
-fileID = fopen('SULI21/Vessel/flux_surface/test_fieldlines_new.dat','w');   % opens the file for modification
+fileID = fopen('SULI21/Vessel/flux_surface/.dat','w');   % opens the file for modification
 
     % DATA  
     % Variable start points for R, Z, and PHI

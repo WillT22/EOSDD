@@ -22,16 +22,28 @@ else                                            % if the line number is given, t
     flux_co(1).phi = [fieldline_file.PHI_lines(line_number,1:end-1)]';
 end
 
-a = -0.5;   % minimum value to add to phi
-b =  0.5;   % maximum value to add to phi
-r = (b-a).*rand(size(flux_co(1).phi,1),1) + a; % random number calculation
-for i = 1:size(flux_co,1)
-    rand_flux_co(i).phi = flux_co(i).phi + r;
-    for j = 1:size(flux_co(1).phi,1)
-        rand_flux_co(i).r = flux_co(i).r;
-        if flux_co(i).r(j) ~= flux_co(i).r(j+1)
-            rand_flux_co(i).r(j) = interp1(flux_co(i).phi, flux_co(i).r, rand_flux_co(i).phi(j));
-        end
-    end
+min = -(2*pi/360/2);   % minimum value to add to phi
+max =  (2*pi/360/2);   % maximum value to add to phi
+rv = (max-min).*rand(size(flux_co(1).phi,1),1) + min; % random number calculation
+for i = 1:size(flux_co,2)
+    rand_flux_co(i).phi = flux_co(i).phi + rv;
+    rand_flux_co(i).r = flux_co(i).r;    
+        rarr = [flux_co(i).phi, flux_co(i).r];
+        ru = unique(rarr,'rows');
+        rand_flux_co(i).r = interp1(ru(:,1), ru(:,2), rand_flux_co(i).phi);
+    rand_flux_co(i).z = flux_co(i).z;    
+        zarr = [flux_co(i).phi, flux_co(i).z];
+        zu = unique(zarr,'rows');
+        rand_flux_co(i).z = interp1(zu(:,1), zu(:,2), rand_flux_co(i).phi);
 end
 end
+
+%{
+            if rand_flux_co(i).phi(j) < flux_co(i).phi(j) 
+                a = [flux_co(i).phi(j-1);flux_co(i).phi(j)];
+                b = [flux_co(i).r(j-1), flux_co(i).r(j)];
+            else if rand_flux_co(i).phi(j) > flux_co(i).phi(j)
+                a = [flux_co(i).phi(j);flux_co(i).phi(j+1)];
+                b = [flux_co(i).r(j), flux_co(i).r(j+1)];
+            end
+            %}
