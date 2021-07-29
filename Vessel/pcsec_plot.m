@@ -1,5 +1,33 @@
 figure;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/22/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/28/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+plot3(fldlns_tv_05.X_lines(:,3), fldlns_tv_05.Y_lines(:,3), fldlns_tv_05.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
+hold on
+toroidal_graph(tv_05h);
+    xlim([-2.2,2.2]);
+    ylim([-2.2,2.2]);
+    zlim([-1,1]);
+    daspect([1 1 1]);
+    grid on;
+    
+figure
+plot3(fldlns_tv_20.X_lines(:,3), fldlns_tv_20.Y_lines(:,3), fldlns_tv_20.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red'); 
+hold on
+toroidal_graph(tv_20h);
+    xlim([-2.2,2.2]);
+    ylim([-2.2,2.2]);
+    zlim([-1,1]);
+    daspect([1 1 1]);
+    grid on;
+
+figure
+plot3(fldlns_tv_35.X_lines(:,3), fldlns_tv_35.Y_lines(:,3), fldlns_tv_35.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
+hold on
+toroidal_graph(tv_35h);
+    xlim([-2.2,2.2]);
+    ylim([-2.2,2.2]);
+    zlim([-1,1]);
+    daspect([1 1 1]);
+    grid on;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{
@@ -77,10 +105,11 @@ plot([ntor_testh.r(4187:4277);ntor_testh.r(4277)],[ntor_testh.z(4187:4277);ntor_
 % plot(flstr.R_lines(:,60:360:end)',flstr.Z_lines(:,60:360:end)',".");
 % plot(flstr.R_lines(:,90:360:end)',flstr.Z_lines(:,90:360:end)',".");
 
-xlim([0.6,2.2]);
-ylim([-1.05,1.05]);
+xlim([-2.2,2.2]);
+ylim([-2.2,2.2]);
+zlim([-1,1]);
 daspect([1 1 1]);
 grid on;
-xlabel('R');
-ylabel('Z');
+%xlabel('R');
+%ylabel('Z');
 

@@ -21,11 +21,11 @@ if g_option == 0
     plot3(V.vertices(:,1),V.vertices(:,2),V.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
 elseif g_option == 1
     % Option 1: to see the whole torus
-    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-    %alpha(0);
+    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0.7 0.7 0.7], 'FaceColor', [0.5 0.5 0.5]);
+    alpha(0);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
-    patch('Faces',V.faces(1:nfacetot/2,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+    patch('Faces',V.faces(1:nfacetot/2-3,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
     %alpha(0.1);
 elseif g_option == 3
     % Option 3: to look at only the lower half of the torus
