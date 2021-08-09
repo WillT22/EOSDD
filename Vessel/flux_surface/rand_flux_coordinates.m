@@ -1,11 +1,13 @@
-function [rand_flux_co] = rand_flux_coordinates(fieldline_file, line_number)
+function [rand_flux_co] = rand_flux_coordinates(fieldline_file, number_of_coordinates ,line_number)
 
 switch nargin
     case 1
         line_number = [];
+        number_of_coordinates = size([fieldline_file.PHI_lines(1,1:end-1)]',1);
     case 2 
+        line_number = [];
     otherwise
-        error('2 inputs are accepted.')
+        error('3 inputs are accepted.')
 end
 
 if isempty(line_number)                         % if the line number is empty, take the coordintates for all fieldlines 
@@ -22,12 +24,18 @@ else                                            % if the line number is given, t
     flux_co(1).phi = [fieldline_file.PHI_lines(line_number,1:end-1)]';
 end
 
-min = -(2*pi/360/2);   % minimum value to add to phi
-max =  (2*pi/360/2);   % maximum value to add to phi
-rv = (max-min).*rand(size(flux_co(1).phi,1),1) + min; % random number calculation
+min = -(pi/number_of_coordinates);   % minimum value to add to phi
+max =  (pi/number_of_coordinates);   % maximum value to add to phi
+rv = (max-min).*rand(number_of_coordinates,1) + min; % random number calculation
+    if rv(1) < 0
+       rv(1) = -rv(1);
+    end
+    if rv(end) > 0 
+       rv(end) = -rv(end);
+    end
+
 for i = 1:size(flux_co,2)
-    rand_flux_co(i).phi = flux_co(i).phi + rv;
-    rand_flux_co(i).r = flux_co(i).r;    
+    rand_flux_co(i).phi = linspace(0,flux_co(i).phi(end),number_of_coordinates)' + rv;   
         rarr = [flux_co(i).phi, flux_co(i).r];
         ru = unique(rarr,'rows');
         rand_flux_co(i).r = interp1(ru(:,1), ru(:,2), rand_flux_co(i).phi);
@@ -37,13 +45,3 @@ for i = 1:size(flux_co,2)
         rand_flux_co(i).z = interp1(zu(:,1), zu(:,2), rand_flux_co(i).phi);
 end
 end
-
-%{
-            if rand_flux_co(i).phi(j) < flux_co(i).phi(j) 
-                a = [flux_co(i).phi(j-1);flux_co(i).phi(j)];
-                b = [flux_co(i).r(j-1), flux_co(i).r(j)];
-            else if rand_flux_co(i).phi(j) > flux_co(i).phi(j)
-                a = [flux_co(i).phi(j);flux_co(i).phi(j+1)];
-                b = [flux_co(i).r(j), flux_co(i).r(j+1)];
-            end
-            %}

@@ -1,25 +1,28 @@
 figure;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/29/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rand_fieldlines = rand_fb_fldln_co;
+%
+rand_fieldlines = rand_fb_fldln_co_M;
 fieldlines = fb_fldln_co;
-fieldline_number = 15;
+fieldline_number = 11;
 
 plot3(rand_fieldlines(fieldline_number).r.*cos(rand_fieldlines(fieldline_number).phi),...
     rand_fieldlines(fieldline_number).r.*sin(rand_fieldlines(fieldline_number).phi),...
-    rand_fieldlines(fieldline_number).z)
-hold on
+    rand_fieldlines(fieldline_number).z, '.', 'Color',[1,0.5,0])
 
+%{
+%hold on
 plot3(fieldlines(fieldline_number).r.*cos(fieldlines(fieldline_number).phi),...
     fieldlines(fieldline_number).r.*sin(fieldlines(fieldline_number).phi),...
     fieldlines(fieldline_number).z)
-hold on
+%hold on
 
 %toroidal_graph(tv_05h);
-
+%}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/28/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{
-fieldline_file = fldlns_tv_35M;
-vessel_file = tv_35h;
+fieldline_file = fldlns_fb_25X_HD;
+vessel_file = fb_25;
 
 plot3(fieldline_file.X_lines(:,3), fieldline_file.Y_lines(:,3), fieldline_file.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
 hold on
@@ -27,7 +30,7 @@ toroidal_graph(vessel_file);
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{
-angle = 0;
+angle = 90;
 p = 180;
 t = 90;
 
@@ -41,13 +44,13 @@ index = find(phi == angle_rads);
 
 input_angle = angle + 1;
 start = index*t+2;
-stop = (index+1)*(t+1);
+stop = (index+1)*(t);
 
 plot(fieldlines.R_lines(:,input_angle:360:end)',fieldlines.Z_lines(:,input_angle:360:end)',".");
 hold on
-plot([tv_05h.r(start:stop);tv_05h.r(start)],[tv_05h.z(start:stop);tv_05h.z(start)]);
-plot([tv_20h.r(start:stop);tv_20h.r(start)],[tv_20h.z(start:stop);tv_20h.z(start)]);
-plot([tv_35h.r(start:stop);tv_35h.r(start)],[tv_35h.z(start:stop);tv_35h.z(start)]);
+plot([fb_05.r(start:stop);fb_05.r(start)],[fb_05.z(start:stop);fb_05.z(start)]);
+plot([fb_20.r(start:stop);fb_20.r(start)],[fb_20.z(start:stop);fb_20.z(start)]);
+plot([fb_35.r(start:stop);fb_35.r(start)],[fb_35.z(start:stop);fb_35.z(start)]);
 
 plot([ntor_testh.r(start:stop);ntor_testh.r(start)],[ntor_testh.z(start:stop);ntor_testh.z(start)]);
 plot([ntor_test05h.r(start:stop);ntor_test05h.r(start)],[ntor_test05h.z(start:stop);ntor_test05h.z(start)]);
@@ -108,9 +111,9 @@ plot([ntor_testh.r(4187:4277);ntor_testh.r(4277)],[ntor_testh.z(4187:4277);ntor_
 % plot(flstr.R_lines(:,60:360:end)',flstr.Z_lines(:,60:360:end)',".");
 % plot(flstr.R_lines(:,90:360:end)',flstr.Z_lines(:,90:360:end)',".");
 
-xlim([-1.75,1.75]);
-ylim([-1.75,1.75]);
-zlim([-0.75,0.75]);
+xlim([-2.1,2.1]);
+ylim([-2.1,2.1]);
+zlim([-1,1]);
 daspect([1 1 1]);
 grid on;
 xlabel('X');

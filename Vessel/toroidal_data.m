@@ -1,9 +1,9 @@
 %function toroidal_data(toroidal_structure)
 % saves torus vertice/face data as a .dat file
-toroidal_structure = ntor_test05h
-fileID = fopen('./SULI21/Vessel/tv_05h.dat','w');           % opens the file for modification
+toroidal_structure = fb_30
+fileID = fopen('./SULI21/Vessel/fb_30.dat','w');           % opens the file for modification
 
-vessel_name = 'Toroidal Vessel Coil-Plasma Separation 05cm';
+vessel_name = 'Toroidal Vessel Coil-Plasma Separation 30cm';
 date = datestr(now, 'mmm-dd-yyyy');
 vertice_total = size(toroidal_structure.vertices,1);       % creates an array of indecies
 face_total = size(toroidal_structure.faces,1);
