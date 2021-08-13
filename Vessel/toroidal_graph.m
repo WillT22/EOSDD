@@ -25,8 +25,8 @@ elseif g_option == 1
     alpha(0);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
-    patch('Faces',V.faces(1:nfacetot/2-3,:),'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
-    %alpha(0.1);
+    patch('Faces',V.faces(1:2*nfacetot/3,:),'Vertices',V.vertices, 'EdgeColor', [0,0,0], 'FaceColor', [0,0,0]);
+    alpha(0.1);
 elseif g_option == 3
     % Option 3: to look at only the lower half of the torus
     lvertices = find(V.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
