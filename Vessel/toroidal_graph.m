@@ -21,8 +21,8 @@ if g_option == 0
     plot3(V.vertices(:,1),V.vertices(:,2),V.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
 elseif g_option == 1
     % Option 1: to see the whole torus
-    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0.7 0.7 0.7], 'FaceColor', [0.5 0.5 0.5]);
-    alpha(0);
+    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [0.8 0.8 0.8]);
+    %alpha(0);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
     patch('Faces',V.faces(1:2*nfacetot/3,:),'Vertices',V.vertices, 'EdgeColor', [0,0,0], 'FaceColor', [0,0,0]);
@@ -49,8 +49,8 @@ daspect([1 1 1]);                       % sets the aspect ratio to 1:1:1
 %xlim([-2.2,2.2]);
 %ylim([-2.2,2.2]);
 zlim([-1,1]);
-c1 = camlight();
-c1 = camlight();
+%c1 = camlight();
+%c1 = camlight();
 %title('Torus');                         % titles the graph
 xlabel('X');ylabel('Y');zlabel('Z');    % labels the axes
 end

@@ -26,22 +26,25 @@ end
 
 min = -(pi/number_of_coordinates);   % minimum value to add to phi
 max =  (pi/number_of_coordinates);   % maximum value to add to phi
-rv = (max-min).*rand(number_of_coordinates,1) + min; % random number calculation
-    if rv(1) < 0
-       rv(1) = -rv(1);
-    end
-    if rv(end) > 0 
-       rv(end) = -rv(end);
-    end
+stream = RandStream.getGlobalStream
+rv = (max-min).*rand(stream, number_of_coordinates, 1) + min; % random number calculation
 
 for i = 1:size(flux_co,2)
-    rand_flux_co(i).phi = linspace(0,flux_co(i).phi(end),number_of_coordinates)' + rv;   
+    rand_flux_co(i).phi = linspace(0,(2*pi)*10^3,number_of_coordinates)' + rv;
+        idx(i).low = (rand_flux_co(i).phi)<0;
+        idx(i).high = (rand_flux_co(i).phi)>(2*pi)*10^3;
+        idxi(i).low = find(idx(i).low);
+        idxi(i).high = find(idx(i).high);
+        
+        rand_flux_co(i).phi(idxi(i).low) = rand_flux_co(i).phi(idxi(i).low) + (2*pi)*10^3;
+        rand_flux_co(i).phi(idxi(i).high) = rand_flux_co(i).phi(idxi(i).high) - (2*pi)*10^3;
+        
         rarr = [flux_co(i).phi, flux_co(i).r];
-        ru = unique(rarr,'rows');
+        ru = [unique(rarr,'rows'); 2*pi*10^3, rarr(1,2)];
         rand_flux_co(i).r = interp1(ru(:,1), ru(:,2), rand_flux_co(i).phi);
-    rand_flux_co(i).z = flux_co(i).z;    
+  
         zarr = [flux_co(i).phi, flux_co(i).z];
-        zu = unique(zarr,'rows');
+        zu = [unique(zarr,'rows'); 2*pi*10^3, zarr(1,2)];
         rand_flux_co(i).z = interp1(zu(:,1), zu(:,2), rand_flux_co(i).phi);
 end
 end
