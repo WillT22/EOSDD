@@ -12,8 +12,8 @@ for i = 1:size(fieldline_file,2)
     fig = figure;
         toroidal_graph(vessel_file(i));
         hold on
-        plot3(fieldline_file(i).X_lines(:,3), fieldline_file(i).Y_lines(:,3), fieldline_file(i).Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
-        plot3(fieldline_file_rev(i).X_lines(:,3), fieldline_file_rev(i).Y_lines(:,3), fieldline_file_rev(i).Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');    
+        plot3(fieldline_file(i).X_lines(:,2), fieldline_file(i).Y_lines(:,2), fieldline_file(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
+        plot3(fieldline_file_rev(i).X_lines(:,2), fieldline_file_rev(i).Y_lines(:,2), fieldline_file_rev(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');    
             xlim([-2.2,2.2]);
             ylim([-2.2,2.2]);
             zlim([-1.2,1.2]);

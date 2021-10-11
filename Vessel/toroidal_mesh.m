@@ -31,6 +31,7 @@ theta = linspace(0,2*pi,t+1);   % partition as measured in the poloidal directio
 [Phi, Theta]=meshgrid(phi(1:p),theta(1:t)); % creates an array from phi and theta 
 Phi = reshape(Phi,[a,1]);
 Theta = reshape(Theta,[a,1]);
+
 [M, Theta] = meshgrid(fourier_coeff.m, Theta(:,1));
 [N, Phi] = meshgrid(fourier_coeff.n, Phi(:,1));
 
@@ -65,5 +66,5 @@ toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
     faces.upper(:,2) = [faces.upper(1:end-t,1)+t;(2:t)';1];
     faces.upper(:,3) = [t+1:a,1:t];
     
-toroidal_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
+toroidal_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper and lower triangular face arrays using every other row
 end

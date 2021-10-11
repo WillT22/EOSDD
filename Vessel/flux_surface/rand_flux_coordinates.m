@@ -24,9 +24,11 @@ else                                            % if the line number is given, t
     flux_co(1).phi = [fieldline_file.PHI_lines(line_number,1:end-1)]';
 end
 
-min = -(pi/number_of_coordinates);   % minimum value to add to phi
-max =  (pi/number_of_coordinates);   % maximum value to add to phi
-stream = RandStream.getGlobalStream
+min = -(pi/number_of_coordinates)*10^3;   % minimum value to add to phi
+max =  (pi/number_of_coordinates)*10^3;   % maximum value to add to phi
+
+stream = load('SULI21/Vessel/flux_surface/randstream.mat');
+stream = stream.stream;
 rv = (max-min).*rand(stream, number_of_coordinates, 1) + min; % random number calculation
 
 for i = 1:size(flux_co,2)

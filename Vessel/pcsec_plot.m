@@ -3,9 +3,9 @@ figure;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/29/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % to show the comparison between the original flux surface and the
 % randomized interpolated one
-%{
-rand_fieldlines = rand_fb_fldln_co_T;
-fieldlines = fb_fldln_co;
+%
+rand_fieldlines = rand_fb_fldln_co_Cbar;
+fieldlines = fb_fldlns;
 fieldline_number = 11;
 %fieldline_number2 = 35;
 %
@@ -13,10 +13,15 @@ plot3(rand_fieldlines(fieldline_number).r.*cos(rand_fieldlines(fieldline_number)
     rand_fieldlines(fieldline_number).r.*sin(rand_fieldlines(fieldline_number).phi),...
     rand_fieldlines(fieldline_number).z, '.', 'Color',[1,0.5,0])
 
+%{
+plot3(fieldlines.R_lines(fieldline_number,:).*cos(fieldlines.PHI_lines(fieldline_number,:)),...
+    fieldlines.R_lines(fieldline_number,:).*sin(fieldlines.PHI_lines(fieldline_number,:)),...
+    fieldlines.Z_lines(fieldline_number,:))
 %
-plot3(fieldlines(fieldline_number).r.*cos(fieldlines(fieldline_number).phi),...
-    fieldlines(fieldline_number).r.*sin(fieldlines(fieldline_number).phi),...
-    fieldlines(fieldline_number).z)
+
+plot3(fieldlines.R_lines(fieldline_number,1:9:end).*cos(fieldlines.PHI_lines(fieldline_number,1:9:end)),...
+    fieldlines.R_lines(fieldline_number,1:9:end).*sin(fieldlines.PHI_lines(fieldline_number,1:9:end)),...
+    fieldlines.Z_lines(fieldline_number,1:9:end),'.')
 %
 hold on
 plot3(fieldlines(fieldline_number2).r.*cos(fieldlines(fieldline_number2).phi),...
@@ -24,24 +29,24 @@ plot3(fieldlines(fieldline_number2).r.*cos(fieldlines(fieldline_number2).phi),..
     fieldlines(fieldline_number2).z,'color','red')
 %
 hold on
-toroidal_graph(fb_15,2);
+%toroidal_graph(fb_15,2);
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/28/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % to plot groups of hit points together on a surface
-%
-fieldline_file  = fldlns_Xbar_f_20;
-fieldline_file2 = fldlns_Xbar_r_20;
-%fieldline_file3 = fldlns_fb_20Cbar3;
-%fieldline_file4 = fldlns_fb_20Cbar4;
+%{
+fieldline_file_f  = [fldlns_Cbar1_f_20, fldlns_Cbar2_f_20, fldlns_Cbar3_f_20,...
+    fldlns_Cbar4_f_20, fldlns_Cbar5_f_20];
+fieldline_file_r = [fldlns_Cbar1_r_20, fldlns_Cbar2_r_20, fldlns_Cbar3_r_20,...
+    fldlns_Cbar4_r_20, fldlns_Cbar5_r_20];
 vessel_file = fb_20;
 
 toroidal_graph(vessel_file);
 hold on
-plot3(fieldline_file.X_lines(:,3), fieldline_file.Y_lines(:,3), fieldline_file.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
-plot3(fieldline_file2.X_lines(:,3), fieldline_file2.Y_lines(:,3), fieldline_file2.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
-%plot3(fieldline_file3.X_lines(:,3), fieldline_file3.Y_lines(:,3), fieldline_file3.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
-%plot3(fieldline_file4.X_lines(:,3), fieldline_file4.Y_lines(:,3), fieldline_file4.Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
-%
+for i = 1:size(fieldline_file_f,2)
+plot3(fieldline_file_f(i).X_lines(:,2), fieldline_file_f(i).Y_lines(:,2), fieldline_file_f(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
+plot3(fieldline_file_r(i).X_lines(:,3), fieldline_file_r(i).Y_lines(:,3), fieldline_file_r(i).Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
+end
+%}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plotting Poincare cross sections with surface cross sections
 %{

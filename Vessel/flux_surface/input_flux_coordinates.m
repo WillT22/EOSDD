@@ -1,11 +1,11 @@
 % puts the cylindrical coordinates made by the flux_coordinates function into a .dat file
 
 fieldline_coordinates = rand_fb_fldln_co_T;
-fieldline_number = 11;
-first = 340001;
-last = 359990;
+fieldlinenumber = 11;
+first = 320001;
+last  = 340000;
 
-fileID = fopen('SULI21/inputs/input.T18','w');   % opens the file for modification
+fileID = fopen('SULI21/inputs/input.T17','w');   % opens the file for modification
 
 %INDATA
     % Runtime Parameters

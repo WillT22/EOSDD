@@ -1,4 +1,4 @@
-function toroidal_graph(V, option)
+function toroidal_graph(toroidal_coordinates, option)
   % V = vessel structure
 
   %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
@@ -13,33 +13,33 @@ function toroidal_graph(V, option)
 %%%%%%%%%%%%%%%%%%%% Graphing Options %%%%%%%%%%%%%%%%%%%%%%%
 
 g_option = option;
-nfacetot = size(V.faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
+nfacetot = size(toroidal_coordinates.faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
 %figure
 
 if g_option == 0
     % Option 0: plot of the vertices
-    plot3(V.vertices(:,1),V.vertices(:,2),V.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
+    plot3(toroidal_coordinates.vertices(:,1),toroidal_coordinates.vertices(:,2),toroidal_coordinates.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
 elseif g_option == 1
     % Option 1: to see the whole torus
-    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [0.8 0.8 0.8]);
+    patch('Faces',toroidal_coordinates.faces,'Vertices',toroidal_coordinates.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [0.8 0.8 0.8]);
     %alpha(0);
 elseif g_option == 2
     % Option 2: to see the front half of the torus
-    patch('Faces',V.faces(1:2*nfacetot/3,:),'Vertices',V.vertices, 'EdgeColor', [0,0,0], 'FaceColor', [0,0,0]);
+    patch('Faces',toroidal_coordinates.faces(1:2*nfacetot/3,:),'Vertices',toroidal_coordinates.vertices, 'EdgeColor', [0,0,0], 'FaceColor', [0,0,0]);
     alpha(0.1);
 elseif g_option == 3
     % Option 3: to look at only the lower half of the torus
-    lvertices = find(V.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
+    lvertices = find(toroidal_coordinates.vertices(:,3) < 0);          % finds every vertex that has a negative z-component
     n = 0;                                          % initializes the row index for the for function
     for i=1:nfacetot                                % for every face,...
-        if ismember(V.faces(i,2), lvertices)        % if the face selected has a second vertex with a negative z-component
+        if ismember(toroidal_coordinates.faces(i,2), lvertices)        % if the face selected has a second vertex with a negative z-component
             n = n + 1;
-            lfaces(n,:) = V.faces(i,:);             % then add that face to the set of lower faces
+            lfaces(n,:) = toroidal_coordinates.faces(i,:);             % then add that face to the set of lower faces
         end
     end
-    V.faces = lfaces(1:n,:);                  % set faces as only the lower faces
+    toroidal_coordinates.faces = lfaces(1:n,:);                  % set faces as only the lower faces
 
-    patch('Faces',V.faces,'Vertices',V.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
+    patch('Faces',toroidal_coordinates.faces,'Vertices',toroidal_coordinates.vertices, 'EdgeColor', [0 0 0], 'FaceColor', [0.5 0.5 0.5]);
     %alpha(0.1);
 end
     
