@@ -44,7 +44,7 @@ toroidal_graph(vessel_file);
 hold on
 for i = 1:size(fieldline_file_f,2)
 plot3(fieldline_file_f(i).X_lines(:,2), fieldline_file_f(i).Y_lines(:,2), fieldline_file_f(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
-plot3(fieldline_file_r(i).X_lines(:,2), fieldline_file_r(i).Y_lines(:,2), fieldline_file_r(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
+plot3(fieldline_file_r(i).X_lines(:,3), fieldline_file_r(i).Y_lines(:,3), fieldline_file_r(i).Z_lines(:,3), 'linestyle', 'none', 'marker', '.','color','red');
 end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
