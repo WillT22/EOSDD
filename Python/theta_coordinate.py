@@ -49,7 +49,7 @@ for i in range(fieldline_file_f.shape[1]):
 # concantenating hitpoints found in the forward and reverse direction into one array as our approximations for Theta
 Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r))
 
-# defnining the derivatives with repsect to Theta_s of R_s
+# defining the derivatives with repsect to Theta_s of R_s
 def R_s_deriv(Theta_s,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
     R_s_deriv_arr = np.empty([len(Phi_h),len(M)]); 
@@ -61,7 +61,7 @@ def R_s_deriv(Theta_s,M,N,Phi_h):
         R_s_deriv_functions[coord] = sum(R_s_deriv_arr[coord]);  
     return
 
-# defnining the derivatives with repsect to Theta_s of Z_s
+# defining the derivatives with repsect to Theta_s of Z_s
 def Z_s_deriv(Theta_s,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
     Z_s_deriv_arr = np.empty([len(Phi_h),len(M)]); 
