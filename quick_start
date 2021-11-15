@@ -5,4 +5,6 @@ module load mod_stellopt &&
 module load stellopt &&
 echo "Loading MATLAB"
 module load matlab
+echo "Loading Anaconda3"
+module load anaconda3
 echo "Done"

@@ -32,13 +32,23 @@ hold on
 %toroidal_graph(fb_15,2);
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/28/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{
+fieldline_file_f = fldlns_Xbar_f_10;
+fieldline_file_r = fldlns_Xbar_r_20;
+vessel_file = pcs_10;
+
+toroidal_graph(vessel_file);
+hold on
+plot3(fieldline_file_f.X_lines(:,2), fieldline_file_f.Y_lines(:,2), fieldline_file_f.Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
+plot3(fieldline_file_r.X_lines(:,2), fieldline_file_r.Y_lines(:,2), fieldline_file_r.Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
+%}
 % to plot groups of hit points together on a surface
-%
-fieldline_file_f  = [fldlns_Cbar1_f_20, fldlns_Cbar2_f_20, fldlns_Cbar3_f_20,...
-    fldlns_Cbar4_f_20, fldlns_Cbar5_f_20];
-fieldline_file_r = [fldlns_Cbar1_r_20, fldlns_Cbar2_r_20, fldlns_Cbar3_r_20,...
-    fldlns_Cbar4_r_20, fldlns_Cbar5_r_20];
-vessel_file = fb_20;
+
+fieldline_file_f = [fldlns_Cbar1_f_10, fldlns_Cbar2_f_10, fldlns_Cbar3_f_10,...
+    fldlns_Cbar4_f_10, fldlns_Cbar5_f_10];
+fieldline_file_r = [fldlns_Cbar1_r_10, fldlns_Cbar2_r_10, fldlns_Cbar3_r_10,...
+    fldlns_Cbar4_r_10, fldlns_Cbar5_r_10];
+vessel_file = pcs_10;
 
 toroidal_graph(vessel_file);
 hold on
@@ -46,7 +56,7 @@ for i = 1:size(fieldline_file_f,2)
 plot3(fieldline_file_f(i).X_lines(:,2), fieldline_file_f(i).Y_lines(:,2), fieldline_file_f(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
 plot3(fieldline_file_r(i).X_lines(:,2), fieldline_file_r(i).Y_lines(:,2), fieldline_file_r(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
 end
-%
+%}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plotting Poincare cross sections with surface cross sections
 %{
@@ -136,8 +146,8 @@ ylim([-2.2,2.2]);
 zlim([-1.2,1.2]);
 daspect([1 1 1]);
 grid on;
-xlabel('X');
-ylabel('Y');
-zlabel('Z');
-% set(gca, 'CameraPosition', [0 0 2000]); % top view
+xlabel('X (meters)');
+ylabel('Y (meters)');
+zlabel('Z (meters)');
+ set(gca, 'CameraPosition', [0 0 2000]); % top view
 % set(gca, 'CameraPosition', [0 0 -2000]); % bottom view

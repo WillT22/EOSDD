@@ -1,6 +1,6 @@
-function [torus_vd] = torus_vd(r, R, p, t)
-  % r = the inner radius of the torus
-  % R = the outer radius of the torus
+function [torus_vd] = torus_vd(R, r, p, t)
+  % R = the major radius of the torus
+  % r = the minor radius of the torus
   % p = number of toroidal segments
   % t = number of poloidal segments
 
@@ -46,4 +46,14 @@ torus_vd.vertices(:,3) = r.*sin(Theta);
     faces.upper(:,3) = [t+1:a,1:t];
    
 torus_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3);         % combines upper and lower triangular face arrays using every other row
+
+% Finding the area of each triangle in the mesh
+for i = 1:size(torus_vd.faces,1)
+    AB(i,:) = torus_vd.vertices(torus_vd.faces(i,2),:) - torus_vd.vertices(torus_vd.faces(i,1),:);
+    AC(i,:) = torus_vd.vertices(torus_vd.faces(i,3),:) - torus_vd.vertices(torus_vd.faces(i,1),:);
+    Cross(i,:) = cross(AB(i,:),AC(i,:));
+    Norm(i,1) = norm(cross(AB(i,:),AC(i,:)));
+    torus_vd.areas(i,1) = 1/2 * norm(cross(AB(i,:),AC(i,:)));
+end
+
 end

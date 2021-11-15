@@ -67,4 +67,14 @@ toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
     faces.upper(:,3) = [t+1:a,1:t];
     
 toroidal_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper and lower triangular face arrays using every other row
+
+% Finding the area of each triangle in the mesh
+for i = 1:size(toroidal_vd.faces,1)
+    AB(i,:) = toroidal_vd.vertices(toroidal_vd.faces(i,2),:) - toroidal_vd.vertices(toroidal_vd.faces(i,1),:);
+    AC(i,:) = toroidal_vd.vertices(toroidal_vd.faces(i,3),:) - toroidal_vd.vertices(toroidal_vd.faces(i,1),:);
+    Cross(i,:) = cross(AB(i,:),AC(i,:));
+    Norm(i,1) = norm(cross(AB(i,:),AC(i,:)));
+    toroidal_vd.areas(i,1) = 1/2 * norm(cross(AB(i,:),AC(i,:)));
+end
+
 end

@@ -1,0 +1,7 @@
+R_in = linspace(90,360,27);
+r_in = linspace(45,180,27);
+
+for i = 1:size(R_in,1)
+    t.t(i = torus_vd(1,2,90,45);
+t2 = torus_vd(1,2,180,90);
+t1_area = sum(torus.areas);
