@@ -39,8 +39,8 @@ fieldline_file_r = [fldlns_Cbar1_r_10, fldlns_Cbar2_r_10, fldlns_Cbar3_r_10, fld
 # for finding Theta values simplistically by using Theta = atan(z/(r-r_0))
 R_0 = 1.409416688957; # major radius in meters
 for i in range(fieldline_file_f.shape[1]):
-    Theta_lines_f[:,i] = atan(fieldline_file_f[i].Z_lines[:,2]/(fieldline_file_f[i].R_lines[:,2]-R_0));
-    Theta_lines_r[:,i] = atan(fieldline_file_r[i].Z_lines[:,2]/(fieldline_file_r[i].R_lines[:,2]-R_0));
+    Theta_lines_f[:,i] = atan2(fieldline_file_f[i].Z_lines[:,2],(fieldline_file_f[i].R_lines[:,2]-R_0));
+    Theta_lines_r[:,i] = atan2(fieldline_file_r[i].Z_lines[:,2],(fieldline_file_r[i].R_lines[:,2]-R_0));
     for t_0 in range(fieldline_file_f(i).PHI_lines.shape[0]):
             if Theta_lines_f[t_0,i] < 0:
                 Theta_lines_f[t_0,i] = Theta_lines_f[t_0,i] + 2*pi;
