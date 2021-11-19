@@ -1,5 +1,5 @@
 import numpy as np
-import numpy.matlib
+import math
 from scipy.optimize import least_squares
 
 # creating functions for R_s and Z_s
@@ -30,17 +30,17 @@ def chi_squared(Theta_s):
     return np.array([R_s(Theta_s,M,N,Phi_h)-R_h],[Z_s(Theta_s,M,N,Phi_h)-Z_h])
     
 # finding approximations for Theta_s
-import hitpoints # imports the hit point data loaded into python from h5 files
+import hitpoints as hp # imports the hit point data loaded into python from h5 files
 
 # creating an array of input files
-fieldline_file_f = [fldlns_Cbar1_f_10, fldlns_Cbar2_f_10, fldlns_Cbar3_f_10, fldlns_Cbar4_f_10, fldlns_Cbar5_f_10];
-fieldline_file_r = [fldlns_Cbar1_r_10, fldlns_Cbar2_r_10, fldlns_Cbar3_r_10, fldlns_Cbar4_r_10, fldlns_Cbar5_r_10];
+fieldline_file_f = [hp.fldlns_Cbar1_f_10, hp.fldlns_Cbar2_f_10, hp.fldlns_Cbar3_f_10, hp.fldlns_Cbar4_f_10, hp.fldlns_Cbar5_f_10];
+fieldline_file_r = [hp.fldlns_Cbar1_r_10, hp.fldlns_Cbar2_r_10, hp.fldlns_Cbar3_r_10, hp.fldlns_Cbar4_r_10, hp.fldlns_Cbar5_r_10];
     
 # for finding Theta values simplistically by using Theta = atan(z/(r-r_0))
 R_0 = 1.409416688957; # major radius in meters
-for i in range(fieldline_file_f.shape[1]):
-    Theta_lines_f[:,i] = atan2(fieldline_file_f[i].Z_lines[:,2],(fieldline_file_f[i].R_lines[:,2]-R_0));
-    Theta_lines_r[:,i] = atan2(fieldline_file_r[i].Z_lines[:,2],(fieldline_file_r[i].R_lines[:,2]-R_0));
+for i in range(len(fieldline_file_f)):
+    Theta_lines_f[:,i] = math.atan2(fieldline_file_f[i].Z_lines[:,2],(fieldline_file_f[i].R_lines[:,2]-R_0));
+    Theta_lines_r[:,i] = math.atan2(fieldline_file_r[i].Z_lines[:,2],(fieldline_file_r[i].R_lines[:,2]-R_0));
     for t_0 in range(fieldline_file_f(i).PHI_lines.shape[0]):
             if Theta_lines_f[t_0,i] < 0:
                 Theta_lines_f[t_0,i] = Theta_lines_f[t_0,i] + 2*pi;
