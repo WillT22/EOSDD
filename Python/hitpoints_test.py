@@ -15,23 +15,19 @@ R_0 = 1.409416688957; # major radius in meters
 Theta_lines_f = np.empty([len(fieldline_file_f),len(fieldline_file_f[0].get('R_lines')[0])]);
 Theta_lines_r = np.empty([len(fieldline_file_f),len(fieldline_file_f[0].get('R_lines')[0])]);
 for f in range(len(fieldline_file_f)):
-     f_R_lines = fieldline_file_f[f].get('R_lines');
-     f_Z_lines = fieldline_file_f[f].get('Z_lines');
-     r_R_lines = fieldline_file_r[f].get('R_lines');
-     r_Z_lines = fieldline_file_r[f].get('Z_lines');
-     for i in range(len(f_R_lines[1])):
-         Theta_lines_f[f,i] = np.arctan2(f_Z_lines[1,i],(f_R_lines[1,i]-R_0));
-         Theta_lines_r[f,i] = np.arctan2(r_Z_lines[1,i],(r_R_lines[1,i]-R_0));
-     print('File ' + str(f+1) + ' of ' + str(len(fieldline_file_f)) + ' computed')
-     break
-print(f_Z_lines[1,:10]);
-print(f_R_lines[1,:10]);
-print(f_R_lines[1,:10]-R_0);
-print(Theta_lines_f[0,:10]);
-#     for t_0 in range(fieldline_file_f(i).PHI_lines.shape[0]):
-#         if Theta_lines_f[t_0,i] < 0:
-#             Theta_lines_f[t_0,i] = Theta_lines_f[t_0,i] + 2*pi;
-#         if Theta_lines_r[t_0,i] < 0:
-#             Theta_lines_r[t_0,i] = Theta_lines_r[t_0,i] + 2*pi;
+	f_R_lines = fieldline_file_f[f].get('R_lines');
+	f_Z_lines = fieldline_file_f[f].get('Z_lines');
+	r_R_lines = fieldline_file_r[f].get('R_lines');
+	r_Z_lines = fieldline_file_r[f].get('Z_lines');
+	for i in range(len(f_R_lines[1])):
+		Theta_lines_f[f,i] = np.arctan2(f_Z_lines[1,i],(f_R_lines[1,i]-R_0));
+		Theta_lines_r[f,i] = np.arctan2(r_Z_lines[1,i],(r_R_lines[1,i]-R_0));
+		if Theta_lines_f[f,i] < 0:
+			Theta_lines_f[f,i] = Theta_lines_f[f,i] + 2*np.pi;
+		if Theta_lines_r[f,i] < 0:
+			Theta_lines_r[f,i] = Theta_lines_r[f,i] + 2*np.pi;
+	print('File ' + str(f+1) + ' of ' + str(len(fieldline_file_f)) + ' computed');
+	print(Theta_lines_f[f,:10]);
 # concantenating hitpoints found in the forward and reverse direction into one array as our approximations for Theta
-#Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r))
+Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r));
+print(Theta_approx[0,:10]);
