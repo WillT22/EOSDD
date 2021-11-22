@@ -28,6 +28,34 @@ def Z_s(Theta_s,M,N,Phi_h):
 # defining the function that will be used in the least squares method
 def chi_squared(Theta_s):
     return np.array([R_s(Theta_s,M,N,Phi_h)-R_h],[Z_s(Theta_s,M,N,Phi_h)-Z_h])
+
+# defining the derivatives with repsect to Theta_s of R_s
+def R_s_deriv(Theta_s,M,N,Phi_h):
+    #initializing arrays for storing outputs of individual elements and summations
+    R_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
+    R_s_deriv_functions = np.empty(len(Phi_h));
+    for coord in range(len(Phi_h)):
+        for mode in range(len(M)):
+            # Using s=3 and p=1
+            R_s_deriv_arr[coord,mode] = -crc2[coord] * M[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
+        R_s_deriv_functions[coord] = sum(R_s_deriv_arr[coord]);
+    return
+
+# defining the derivatives with repsect to Theta_s of Z_s
+def Z_s_deriv(Theta_s,M,N,Phi_h):
+    #initializing arrays for storing outputs of individual elements and summations
+    Z_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
+    Z_s_deriv_functions = np.empty(len(Phi_h));
+    for coord in range(len(Phi_h)):
+        for mode in range(len(M)):
+            # Using s=3 and p=1
+            Z_s_deriv_arr[coord,mode] = czs2[coord] * M[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
+        Z_s_deriv_functions[coord] = sum(Z_s_deriv_arr[coord]);
+    return
+
+# defining the Jacobian that will be used in the least squares method
+def chi_squared_jac(Theta_s):
+    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)])
     
 # finding approximations for Theta_s
 import hitpoints as hp # imports the hit point data loaded into python from h5 files
@@ -38,44 +66,26 @@ fieldline_file_r = [hp.fldlns_Cbar1_r_10, hp.fldlns_Cbar2_r_10, hp.fldlns_Cbar3_
     
 # for finding Theta values simplistically by using Theta = atan(z/(r-r_0))
 R_0 = 1.409416688957; # major radius in meters
-for i in range(len(fieldline_file_f)):
-    Theta_lines_f[:,i] = math.atan2(fieldline_file_f[i].Z_lines[:,2],(fieldline_file_f[i].R_lines[:,2]-R_0));
-    Theta_lines_r[:,i] = math.atan2(fieldline_file_r[i].Z_lines[:,2],(fieldline_file_r[i].R_lines[:,2]-R_0));
-    for t_0 in range(fieldline_file_f(i).PHI_lines.shape[0]):
-            if Theta_lines_f[t_0,i] < 0:
-                Theta_lines_f[t_0,i] = Theta_lines_f[t_0,i] + 2*pi;
-            if Theta_lines_r[t_0,i] < 0:
-                Theta_lines_r[t_0,i] = Theta_lines_r[t_0,i] + 2*pi;
+Theta_lines_f = np.empty([len(fieldline_file_f[0].get('R_lines')[0]),len(fieldline_file_f)]);
+Theta_lines_r = np.empty([len(fieldline_file_f[0].get('R_lines')[0]),len(fieldline_file_f)]);
+print(len(fieldline_file_f));
+print(len(fieldline_file_f[0].get('R_lines')[0]));
+for f in range(len(fieldline_file_f)):
+     f_R_lines = fieldline_file_f[f].get('R_lines');
+     f_Z_lines = fieldline_file_f[f].get('Z_lines');
+     r_R_lines = fieldline_file_r[f].get('R_lines');
+     r_Z_lines = fieldline_file_r[f].get('Z_lines');
+     print(len(f_R_lines[1]))
+     for i in range(len(f_R_lines[1])):
+     	 Theta_lines_f[i,f] = math.atan2(f_Z_lines[i,1],f_R_lines[i,1]-R_0);
+     	 Theta_lines_r[i,f] = math.atan2(f_Z_lines[i,1],f_R_lines[i,1]-R_0);
+#     for t_0 in range(fieldline_file_f(i).PHI_lines.shape[0]):
+#         if Theta_lines_f[t_0,i] < 0:
+#             Theta_lines_f[t_0,i] = Theta_lines_f[t_0,i] + 2*pi;
+#         if Theta_lines_r[t_0,i] < 0:
+#             Theta_lines_r[t_0,i] = Theta_lines_r[t_0,i] + 2*pi;
 # concantenating hitpoints found in the forward and reverse direction into one array as our approximations for Theta
 Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r))
-
-# defining the derivatives with repsect to Theta_s of R_s
-def R_s_deriv(Theta_s,M,N,Phi_h):  
-    #initializing arrays for storing outputs of individual elements and summations
-    R_s_deriv_arr = np.empty([len(Phi_h),len(M)]); 
-    R_s_deriv_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):            
-            # Using s=3 and p=1
-            R_s_deriv_arr[coord,mode] = -crc2[coord] * M[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
-        R_s_deriv_functions[coord] = sum(R_s_deriv_arr[coord]);  
-    return
-
-# defining the derivatives with repsect to Theta_s of Z_s
-def Z_s_deriv(Theta_s,M,N,Phi_h):  
-    #initializing arrays for storing outputs of individual elements and summations
-    Z_s_deriv_arr = np.empty([len(Phi_h),len(M)]); 
-    Z_s_deriv_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):            
-            # Using s=3 and p=1
-            Z_s_deriv_arr[coord,mode] = czs2[coord] * M[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
-        Z_s_deriv_functions[coord] = sum(Z_s_deriv_arr[coord]);
-    return
-
-# defining the Jacobian that will be used in the least squares method
-def chi_squared_jac(Theta_s):
-    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)])
     
 # using the least squares method to find the closest Theta_s
 Theta_s_result = least_squares(chi_squared, Theta_approx, chi_squared_jac, method='lm');
