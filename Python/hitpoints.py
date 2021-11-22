@@ -62,7 +62,3 @@ fldlns_Cbar2_r_25 = h5py.File('../../../../p/stellopt/ANALYSIS/wteague/flux_surf
 fldlns_Cbar3_r_25 = h5py.File('../../../../p/stellopt/ANALYSIS/wteague/flux_surface/simulations/fieldlines/Cbar/fieldlines_Cbar3_r_25.h5','r');
 fldlns_Cbar4_r_25 = h5py.File('../../../../p/stellopt/ANALYSIS/wteague/flux_surface/simulations/fieldlines/Cbar/fieldlines_Cbar4_r_25.h5','r');
 fldlns_Cbar5_r_25 = h5py.File('../../../../p/stellopt/ANALYSIS/wteague/flux_surface/simulations/fieldlines/Cbar/fieldlines_Cbar5_r_25.h5','r');
-
-print(fldlns_Cbar1_f_10);
-keys = fldlns_Cbar1_f_10.keys();
-print(keys)
