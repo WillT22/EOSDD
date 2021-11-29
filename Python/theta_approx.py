@@ -30,4 +30,4 @@ for f in range(len(fieldline_file_f)):
 	#print(Theta_lines_f[f,:10]);
 # concantenating hitpoints found in the forward and reverse direction into one array as our approximations for Theta
 Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r));
-#print(Theta_approx[0,:10]);
+#print(Theta_approx[0,:]);
