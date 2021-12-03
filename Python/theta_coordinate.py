@@ -2,6 +2,16 @@ import numpy as np
 from scipy.optimize import least_squares
 #import theta_approx as ta # imports theta approximations found in the theta_approx file
 
+# read and extract Fourier coeffecients from nescin file
+fourier_cell = np.loadtxt('../Vessel/nescin_files/nescin.fb_10',skiprows=172)
+M = fourier_cell[:,0]
+N = fourier_cell[:,1]
+crc2 = fourier_cell[:,2]
+czs2 = fourier_cell[:,3]
+crs2 = fourier_cell[:,4]
+czc2 = fourier_cell[:,5]
+
+
 # creating functions for R_s and Z_s
 def R_s(Theta_s,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
