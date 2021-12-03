@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import least_squares
-import theta_approx as ta # imports theta approximations found in the theta_approx file
+#import theta_approx as ta # imports theta approximations found in the theta_approx file
 
 # creating functions for R_s and Z_s
 def R_s(Theta_s,M,N,Phi_h):  
@@ -58,10 +58,10 @@ def chi_squared_jac(Theta_s):
     return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)])
 
 # resizing array of approximate thetas into a 1 x n matrix
-Theta_approx = ta.Theta_approx[:];
+	# for bypasing saved data file and using the function directly use the following line
+		#Theta_approx = ta.Theta_approx[:];
+Theta_approx = np.loadtxt('Theta_approx_file.dat')
 print(Theta_approx.shape);
-#total_elements = len(Theta_approx[0]) * len(Theta_approx[1]);
-#print(total_elements) 
 Theta0 = Theta_approx.flatten();
 print(Theta0.shape);
 print(Theta0.ndim);
