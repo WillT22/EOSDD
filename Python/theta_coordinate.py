@@ -19,17 +19,6 @@ R_h = R_h.flatten();
 Z_h = hpd.Z[:];
 Z_h = Z_h.flatten();
 
-# using the least squares method to find the closest Theta_s
-print('finding least square')
-for coord in range(len(Phi_h)):
-    print('computing theta', coord) 
-    Theta_result_temp = least_squares(chi_squared, Theta0[coord], chi_squared_jac, method='lm')
-    Theta_s_result[coord] = Theta_result_temp.x
-    
-# defining the function that will be used in the least squares method
-def chi_squared(Theta_s):
-    return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h)])
-
 # creating functions for R_s and Z_s
 def R_s(Theta_s,M,N,Phi_h):  	
     #initializing arrays for storing outputs of individual elements and summations
@@ -50,6 +39,10 @@ def Z_s(Theta_s,M,N,Phi_h):
         Z_s_arr[mode] = czs2[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
     Z_s_functions = sum(Z_s_arr);
     return Z_s_functions
+
+# defining the function that will be used in the least squares method
+def chi_squared(Theta_s):
+    return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h)])
     
 # resizing array of approximate thetas into a 1 x n matrix
 Theta_approx = np.loadtxt('Theta_approx_file.dat')
@@ -57,10 +50,6 @@ Theta_approx = np.loadtxt('Theta_approx_file.dat')
 #Theta_approx = ta.Theta_approx[:];
 # flattens Theta_approx into a 1D matrix for use in least_squares
 Theta0 = Theta_approx.flatten();
-
-# defining the Jacobian that will be used in the least squares method
-def chi_squared_jac(Theta_s):
-    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)]) 
 
 # defining the derivatives with repsect to Theta_s of R_s
 def R_s_deriv(Theta_s,M,N,Phi_h):
@@ -83,5 +72,16 @@ def Z_s_deriv(Theta_s,M,N,Phi_h):
         Z_s_deriv_arr[mode] = czs2[mode] * M[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
     Z_s_deriv_functions = sum(Z_s_deriv_arr);
     return Z_s_deriv_functions
+
+# defining the Jacobian that will be used in the least squares method
+def chi_squared_jac(Theta_s):
+    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)]) 
+
+# using the least squares method to find the closest Theta_s
+print('finding least square')
+for coord in range(len(Phi_h)):
+    print('computing theta', coord) 
+    Theta_result_temp = least_squares(chi_squared, Theta0[coord], chi_squared_jac, method='lm')
+    Theta_s_result[coord] = Theta_result_temp.x
 
 np.savetxt("Theta_s_result.dat",Theta_s_result)
