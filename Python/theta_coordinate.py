@@ -19,76 +19,69 @@ R_h = R_h.flatten();
 Z_h = hpd.Z[:];
 Z_h = Z_h.flatten();
 
+# using the least squares method to find the closest Theta_s
+print('finding least square')
+for coord in range(len(Phi_h)):
+    print('computing theta', coord) 
+    Theta_result_temp = least_squares(chi_squared, Theta0[coord], chi_squared_jac, method='lm')
+    Theta_s_result[coord] = Theta_result_temp.x
+    
+# defining the function that will be used in the least squares method
+def chi_squared(Theta_s):
+    return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h)])
+
 # creating functions for R_s and Z_s
-def R_s(Theta_s,M,N,Phi_h):  
-    print('computing R_s')	
+def R_s(Theta_s,M,N,Phi_h):  	
     #initializing arrays for storing outputs of individual elements and summations
     R_s_arr = np.empty([len(Phi_h),len(M)]); 
     R_s_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):            
-            # Using s=3 and p=1
-            R_s_arr[coord,mode] = crc2[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
-        R_s_functions[coord] = sum(R_s_arr[coord]);  
+    for mode in range(len(M)):            
+        # Using s=3 and p=1
+        R_s_arr[mode] = crc2[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
+    R_s_functions = sum(R_s_arr);  
     return R_s_functions
     
 def Z_s(Theta_s,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
-    print('computing Z_s') 
     Z_s_arr = np.empty([len(Phi_h),len(M)]); 
     Z_s_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):            
-            # Using s=3 and p=1
-            Z_s_arr[coord,mode] = czs2[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
-        Z_s_functions[coord] = sum(Z_s_arr[coord]);
+    for mode in range(len(M)):            
+        # Using s=3 and p=1
+        Z_s_arr[mode] = czs2[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);    
+    Z_s_functions = sum(Z_s_arr);
     return Z_s_functions
     
-# defining the function that will be used in the least squares method
-def chi_squared(Theta_s):
-    print('computing chi_squared') 
-    return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h)])
-
-# defining the derivatives with repsect to Theta_s of R_s
-def R_s_deriv(Theta_s,M,N,Phi_h):
-    print('computing R_s_deriv') 
-    #initializing arrays for storing outputs of individual elements and summations
-    R_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
-    R_s_deriv_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):
-            # Using s=3 and p=1
-            R_s_deriv_arr[coord,mode] = -crc2[mode] * M[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
-        R_s_deriv_functions[coord] = sum(R_s_deriv_arr[coord]);
-    return R_s_deriv_functions
-
-# defining the derivatives with repsect to Theta_s of Z_s
-def Z_s_deriv(Theta_s,M,N,Phi_h):
-    print('computing Z_s_deriv') 
-    #initializing arrays for storing outputs of individual elements and summations
-    Z_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
-    Z_s_deriv_functions = np.empty(len(Phi_h));
-    for coord in range(len(Phi_h)):
-        for mode in range(len(M)):
-            # Using s=3 and p=1
-            Z_s_deriv_arr[coord,mode] = czs2[mode] * M[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
-        Z_s_deriv_functions[coord] = sum(Z_s_deriv_arr[coord]);
-    return Z_s_deriv_functions
-
-# defining the Jacobian that will be used in the least squares method
-def chi_squared_jac(Theta_s):
-    print('computing chi_squared_jacobian')
-    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)]) 
-
 # resizing array of approximate thetas into a 1 x n matrix
-print('approximating theta')
 Theta_approx = np.loadtxt('Theta_approx_file.dat')
 # for bypasing saved data file and using the function directly use the following line instead
 #Theta_approx = ta.Theta_approx[:];
 # flattens Theta_approx into a 1D matrix for use in least_squares
 Theta0 = Theta_approx.flatten();
-    
-# using the least squares method to find the closest Theta_s
-print('finding least square')
-Theta_s_result = least_squares(chi_squared, Theta0, chi_squared_jac, method='lm')
-np.savetxt("Theta_s_result.dat",Theta_s_result.x)
+
+# defining the Jacobian that will be used in the least squares method
+def chi_squared_jac(Theta_s):
+    return np.array([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)]) 
+
+# defining the derivatives with repsect to Theta_s of R_s
+def R_s_deriv(Theta_s,M,N,Phi_h):
+    #initializing arrays for storing outputs of individual elements and summations
+    R_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
+    R_s_deriv_functions = np.empty(len(Phi_h));
+    for mode in range(len(M)):
+        # Using s=3 and p=1
+        R_s_deriv_arr[mode] = -crc2[mode] * M[mode] * np.sin(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
+    R_s_deriv_functions = sum(R_s_deriv_arr);
+    return R_s_deriv_functions
+
+# defining the derivatives with repsect to Theta_s of Z_s
+def Z_s_deriv(Theta_s,M,N,Phi_h):
+    #initializing arrays for storing outputs of individual elements and summations
+    Z_s_deriv_arr = np.empty([len(Phi_h),len(M)]);
+    Z_s_deriv_functions = np.empty(len(Phi_h));
+    for mode in range(len(M)):
+        # Using s=3 and p=1
+        Z_s_deriv_arr[mode] = czs2[mode] * M[mode] * np.cos(M[mode]*Theta_s[coord] + 3*N[mode]*Phi_h[coord]);
+    Z_s_deriv_functions = sum(Z_s_deriv_arr);
+    return Z_s_deriv_functions
+
+np.savetxt("Theta_s_result.dat",Theta_s_result)
