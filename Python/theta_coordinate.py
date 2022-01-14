@@ -19,8 +19,6 @@ print('importing hitpoint data')
 Phi_h = hpd.Phi[:]
 R_h = hpd.R[:]
 Z_h = hpd.Z[:]
-print(Phi_h.shape[0])
-print(Phi_h.shape[1])
 
 ### Creating Functions to be used in Least Squares Calculation ###
 # creating functions for R_s and Z_s
@@ -82,10 +80,11 @@ def chi_squared_jac(Theta_s):
 print('finding least square')
 Theta_s_result = np.empty_like(Phi_h)
 for file_number in range(Phi_h.shape[1]):
+    print('file number', file_number)
     for coord in range(Phi_h.shape[0]):    
         if coord % 100 == 0:
             print('computing theta', coord)
         Theta_result_temp = least_squares(chi_squared, Theta_approx[coord,file_number], chi_squared_jac, method='lm')
         Theta_s_result[coord,file_number] = Theta_result_temp.x
 
-np.savetxt("Theta_Cbar_10.dat",Theta_s_result)
+np.savetxt("Theta_s_t2.dat",Theta_s_result)
