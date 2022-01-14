@@ -3,9 +3,9 @@
 #SBATCH -p general
 #SBATCH -t 8:00:00
 #SBATCH --mem-per-cpu=2gb
-#SBATCH -J Theta
-#SBATCH -o Theta-%j.out
-#SBATCH -e Theta-%j.err
+#SBATCH -J theta_Cbar_10
+#SBATCH -o theta_Cbar_10-%j.out
+#SBATCH -e theta_Cbar_10-%j.err
 
 module load anaconda3
 
