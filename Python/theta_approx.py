@@ -1,4 +1,5 @@
 import numpy as np
+import nescin_read as nescin
 
 import sys
 np.set_printoptions(threshold=sys.maxsize)
@@ -10,8 +11,12 @@ import hitpoints as hp # imports the hit point data loaded into python from h5 f
 fieldline_file_f = [hp.fldlns_Cbar1_f_10, hp.fldlns_Cbar2_f_10, hp.fldlns_Cbar3_f_10, hp.fldlns_Cbar4_f_10, hp.fldlns_Cbar5_f_10]
 fieldline_file_r = [hp.fldlns_Cbar1_r_10, hp.fldlns_Cbar2_r_10, hp.fldlns_Cbar3_r_10, hp.fldlns_Cbar4_r_10, hp.fldlns_Cbar5_r_10]
 
+# for finding r_0 value in nescin data file
+for mode in range(len(nescin.M)):
+    if nescin.M[mode] == 0 and nescin.N[mode] == 0:
+        R_0 = nescin.crc2[mode] # major radius in meters
+print(R_0)
 # for finding Theta values simplistically by using Theta = atan(z/(r-r_0))
-R_0 = 1.409416688957; # major radius in meters
 Theta_lines_f = np.empty([len(fieldline_file_f[0].get('R_lines')[0]),len(fieldline_file_f)])
 Theta_lines_r = np.empty([len(fieldline_file_f[0].get('R_lines')[0]),len(fieldline_file_f)])
 for f in range(len(fieldline_file_f)):
@@ -31,4 +36,4 @@ for f in range(len(fieldline_file_f)):
 Theta_approx = np.concatenate((Theta_lines_f, Theta_lines_r))
 
 # writing Theta approximation points to a file
-np.savetxt("Theta_approx_file.dat",Theta_approx)
+np.savetxt("Theta_approx_file_test.dat",Theta_approx)

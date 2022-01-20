@@ -1,20 +1,19 @@
 import numpy as np
+import nescin_read as nescin
 from scipy.optimize import least_squares
 
 ### Import Vessel nescin File ###
-# read and extract Fourier coeffecients from nescin file
-fourier_cell = np.loadtxt('../Vessel/nescin_files/nescin.fb_10',skiprows=172)
-M = fourier_cell[:,0]
-N = fourier_cell[:,1]
-crc2 = fourier_cell[:,2]
-czs2 = fourier_cell[:,3]
+M = nescin.M
+N = nescin.N
+crc2 = nescin.crc2
+czs2 = nescin.czs2
 
 ### Import Hit Point Data ###
 import hitpoints as hp # imports the hit point data loaded into python from h5 files
 import hitpoint_data as hpd # imports hitpoint data variables
 #+ import theta_approx as ta # imports theta approximations found in the theta_approx file
 
-# importing coordtinates data from hitpoint data set and flattening them for use
+# importing coordtinates data from hitpoint data set
 print('importing hitpoint data')
 Phi_h = hpd.Phi[:]
 R_h = hpd.R[:]
@@ -45,8 +44,7 @@ def chi_squared(Theta_s):
     return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h[coord,file_number]),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h[coord,file_number])])
 
 ### Preparing Approximate Theta ###
-# resizing array of approximate thetas into a 1 x n matrix
-Theta_approx = np.loadtxt('Theta_approx_file.dat')
+Theta_approx = np.loadtxt('Theta_approx_10.dat')
 # for bypasing saved data file and using the function directly use the following line instead
 #Theta_approx = ta.Theta_approx[:]
 
