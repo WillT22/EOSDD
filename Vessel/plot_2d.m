@@ -55,6 +55,7 @@ for i = 1:size(fieldline_file_f,2)
         end
     end
 end
+Phi_lines = [Phi_lines_f; Phi_lines_r];
  
 %{
 % for finding Theta values simplistically by using 
@@ -74,10 +75,10 @@ for i = 1:size(fieldline_file_f,2)
 end
 %}
 
-% Using the least squares method with an imported data ta
+% Using the least squares method with an imported data table
+Theta_lines = Theta_s_t2;
 
-plot(Phi_lines_f, Theta_lines_f, 'linestyle', 'none', 'marker', '.','color','red');
-plot(Phi_lines_r, Theta_lines_r, 'linestyle', 'none', 'marker', '.','color','red');
+plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 
 xlim([0,2*pi]);
 ylim([0,2*pi]);
