@@ -24,20 +24,37 @@ Z_h = hpd.Z[:]
 def R_s(Theta_s,M,N,Phi_h):  	
     #initializing arrays for storing outputs of individual elements and summations
     R_s_arr = np.empty(len(M)) 
+    #print('R_s')
     for mode in range(len(M)):           
         # Using s=3 and p=1
-        R_s_arr[mode] = crc2[mode] * np.cos(M[mode] * Theta_s + 3*N[mode]*Phi_h[coord,file_number]);    
-    R_s_fun = sum(R_s_arr)  
-    return R_s_fun
+        R_s_arr[mode] = crc2[mode] * np.cos(M[mode] * Theta_s + 3*N[mode]*Phi_h[coord,file_number])    
+#        print(Theta_s)
+#        print('Mode = ', mode)
+#        print('M = ',M[mode])
+#        print('N = ',N[mode]) 
+#        print('crc2 = ',crc2[mode])
+#        print('Phi_h = ',Phi_h[coord,file_number]) 
+#        print('R_s_arr[mode] = ',R_s_arr[mode])
+    R_s_sum = sum(R_s_arr)  
+#    print('R_s_sum = ',R_s_sum)
+    return R_s_sum
     
 def Z_s(Theta_s,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
     Z_s_arr = np.empty(len(M)) 
+    #print('Z_s')
     for mode in range(len(M)):            
         # Using s=3 and p=1
         Z_s_arr[mode] = czs2[mode] * np.sin(M[mode] * Theta_s + 3*N[mode]*Phi_h[coord,file_number]);    
-    Z_s_fun = sum(Z_s_arr)
-    return Z_s_fun
+#        print('Mode = ', mode)
+#        print('M = ',M[mode])
+#        print('N = ',N[mode]) 
+#        print('czs2 = ',czs2[mode])
+#        print('Phi_h = ',Phi_h[coord,file_number]) 
+#        print('Z_s_arr[mode] = ',Z_s_arr[mode])
+    Z_s_sum = sum(Z_s_arr)
+    #print('Z_s_sum = ',Z_s_sum)
+    return Z_s_sum
 
 # defining the function that will be used in the least squares method
 def chi_squared(Theta_s):
@@ -76,13 +93,21 @@ def chi_squared_jac(Theta_s):
 ### Using Least Squares Function ###
 # using the least squares method to find the closest Theta_s
 print('finding least square')
+print(Phi_h.shape)
 Theta_s_result = np.empty_like(Phi_h)
-for file_number in range(Phi_h.shape[1]):
+#for file_number in range(Phi_h.shape[1]):
+for file_number in range(1):
     print('file number', file_number)
-    for coord in range(Phi_h.shape[0]):    
+    #for coord in range(Phi_h.shape[0]):    
+    for coord in range(39997,39998):
+#        print('coord = ',coord)
+#        print('Phi_h = ',Phi_h[coord,file_number])
+#        print('R_h = ',  R_h[coord,file_number])
+#        print('Z_h = ',  Z_h[coord,file_number])
+#        print('Theta_approx = ',Theta_approx[coord,file_number])
         if coord % 100 == 0:
             print('computing theta', coord)
         Theta_result_temp = least_squares(chi_squared, Theta_approx[coord,file_number], chi_squared_jac, method='lm')
         Theta_s_result[coord,file_number] = Theta_result_temp.x
 
-np.savetxt("Theta_s_t2.dat",Theta_s_result)
+np.savetxt("Theta_test.dat",Theta_s_result)

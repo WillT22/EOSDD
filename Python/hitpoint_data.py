@@ -36,7 +36,7 @@ for f in range(len(fieldline_file_f)):
         Z_lines_f[:,f] = fieldline_file_f[f].get('Z_lines')[1,:]
         Z_lines_r[:,f] = fieldline_file_r[f].get('Z_lines')[1,:]
 # concantenating R value for hitpoints found in the forward and reverse direction into one array
-Z = np.concatenate((R_lines_f, R_lines_r))
+Z = np.concatenate((Z_lines_f, Z_lines_r))
 
 np.savetxt("Phi_file.dat",Phi)
 np.savetxt("R_file.dat",R)
