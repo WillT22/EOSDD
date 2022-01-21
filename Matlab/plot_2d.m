@@ -55,11 +55,12 @@ for i = 1:size(fieldline_file_f,2)
         end
     end
 end
+Phi_lines = [Phi_lines_f; Phi_lines_r];
  
-%{
+
 % for finding Theta values simplistically by using 
 % Theta = atan(z/(r-r_0))
-R_0 = 1.409416688957; % meters
+R_0 = 1.405322310372; % meters
 for i = 1:size(fieldline_file_f,2)
     Theta_lines_f(:,i) = atan2(fieldline_file_f(i).Z_lines(:,2),(fieldline_file_f(i).R_lines(:,2)-R_0));
     Theta_lines_r(:,i) = atan2(fieldline_file_r(i).Z_lines(:,2),(fieldline_file_r(i).R_lines(:,2)-R_0));
@@ -72,12 +73,13 @@ for i = 1:size(fieldline_file_f,2)
             end
         end
 end
-%}
+Theta_lines = [Theta_lines_f; Theta_lines_r];
 
-% Using the least squares method with an imported data ta
 
-plot(Phi_lines_f, Theta_lines_f, 'linestyle', 'none', 'marker', '.','color','red');
-plot(Phi_lines_r, Theta_lines_r, 'linestyle', 'none', 'marker', '.','color','red');
+% Using the least squares method with an imported data table
+Theta_lines = Theta_test2;
+
+plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 
 xlim([0,2*pi]);
 ylim([0,2*pi]);

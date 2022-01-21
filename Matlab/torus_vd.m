@@ -29,9 +29,16 @@ theta = linspace(0,2*pi,t+1);   % partition as measured in the poloidal directio
 Phi = reshape(Phi,[a,1]);
 Theta = reshape(Theta,[a,1]);
 
-torus_vd.vertices(:,1) = (R+r.*cos(Theta)).*cos(Phi);
-torus_vd.vertices(:,2) = (R+r.*cos(Theta)).*sin(Phi);
-torus_vd.vertices(:,3) = r.*sin(Theta);
+torus_vd.phi = Phi;
+torus_vd.theta = Theta;
+
+torus_vd.x = (R+r.*cos(Theta)).*cos(Phi);
+torus_vd.y = (R+r.*cos(Theta)).*sin(Phi);
+torus_vd.z = r.*sin(Theta);
+
+torus_vd.vertices(:,1) = torus_vd.x;
+torus_vd.vertices(:,2) = torus_vd.y;
+torus_vd.vertices(:,3) = torus_vd.z;
 
 % triangular faces
     % lower triangles:
