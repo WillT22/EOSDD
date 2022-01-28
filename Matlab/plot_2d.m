@@ -1,3 +1,12 @@
+function plot_2d(Phi_lines, Theta_lines)
+
+%%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
+  switch nargin         % creates a few default options
+      case 2    
+      otherwise         % else throw error
+          error('Phi and Theta are required.')
+  end
+
 %%% Creating the mesh grid in 2D %%%
 clear grid;
 p=180;
@@ -36,48 +45,13 @@ vessel_coords = grid;
     patch('Faces',vessel_coords.faces,'Vertices',vessel_coords.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
 hold on
 
-% plotting hit points on the 2D grid
-fieldline_file_f = [fldlns_Cbar1_f_10, fldlns_Cbar2_f_10, fldlns_Cbar3_f_10,...
-    fldlns_Cbar4_f_10, fldlns_Cbar5_f_10];
-fieldline_file_r = [fldlns_Cbar1_r_10, fldlns_Cbar2_r_10, fldlns_Cbar3_r_10,...
-    fldlns_Cbar4_r_10, fldlns_Cbar5_r_10];
-
-% for adjusting the Phi values to be on the interval of [0,2*pi]
-for i = 1:size(fieldline_file_f,2)
-    Phi_lines_f(:,i) = fieldline_file_f(i).PHI_lines(:,2);
-    Phi_lines_r(:,i) = fieldline_file_r(i).PHI_lines(:,2);
-    for p_0 = 1:size(fieldline_file_f(i).PHI_lines,1)
-        if Phi_lines_f(p_0,i) < 0
-            Phi_lines_f(p_0,i) = Phi_lines_f(p_0,i) + 2*pi;
-        end
-         if Phi_lines_r(p_0,i) < 0
-            Phi_lines_r(p_0,i) = Phi_lines_r(p_0,i) + 2*pi;
-        end
-    end
-end
-Phi_lines = [Phi_lines_f; Phi_lines_r];
- 
-
-% for finding Theta values simplistically by using 
-% Theta = atan(z/(r-r_0))
-R_0 = 1.405322310372; % meters
-for i = 1:size(fieldline_file_f,2)
-    Theta_lines_f(:,i) = atan2(fieldline_file_f(i).Z_lines(:,2),(fieldline_file_f(i).R_lines(:,2)-R_0));
-    Theta_lines_r(:,i) = atan2(fieldline_file_r(i).Z_lines(:,2),(fieldline_file_r(i).R_lines(:,2)-R_0));
-        for t_0 = 1:size(fieldline_file_f(i).PHI_lines,1)
-            if Theta_lines_f(t_0,i) < 0
-                Theta_lines_f(t_0,i) = Theta_lines_f(t_0,i) + 2*pi;
-            end
-             if Theta_lines_r(t_0,i) < 0
-                Theta_lines_r(t_0,i) = Theta_lines_r(t_0,i) + 2*pi;
-            end
-        end
-end
-Theta_lines = [Theta_lines_f; Theta_lines_r];
-
-
+%{
 % Using the least squares method with an imported data table
 Theta_lines = Theta_test2;
+
+Phi_lines = random_torus_hitpoints(:,2);
+Theta_lines = random_torus_hitpoints(:,4);
+%}
 
 plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 
