@@ -9,7 +9,6 @@ crc2 = nescin.crc2
 czs2 = nescin.czs2
 
 ### Import Hit Point Data ###
-import hitpoints as hp # imports the hit point data loaded into python from h5 files
 import hitpoint_data as hpd # imports hitpoint data variables
 #+ import theta_approx as ta # imports theta approximations found in the theta_approx file
 
