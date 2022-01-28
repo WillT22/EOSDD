@@ -11,10 +11,10 @@ function toroidal_graph(toroidal_coordinates, option)
   end
  
 %%%%%%%%%%%%%%%%%%%% Graphing Options %%%%%%%%%%%%%%%%%%%%%%%
-%figure
+figure
 g_option = option;
 nfacetot = size(toroidal_coordinates.faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
-%figure
+
 
 if g_option == 0
     % Option 0: plot of the vertices

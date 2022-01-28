@@ -20,18 +20,20 @@ data_file = "torus_theta_test.dat"
 ### Creating Functions to be used in Least Squares Calculation ###
 R = 1.5
 r = 0.5
+
 # creating functions for R_s and Z_s
 def R_s(Theta_s):  	
-    R_s_fun = R+r*np.cos(Theta_s)
-    return R_s_fun
+    return R+r*np.cos(Theta_s)
     
 def Z_s(Theta_s):  
-    Z_s_fun = r*np.sin(Theta_s)
-    return Z_s_fun
+    return r*np.sin(Theta_s)
+
+# garr = np.array([np.subtract(R_s(Theta_approx[0,0]),R_h[0,0]),np.subtract(Z_s(Theta_approx[0,0]),Z_h[0,0])])
+# print(garr)
 
 # defining the function that will be used in the least squares method
 def chi_squared(Theta_s):
-    return np.array([np.subtract(R_s(Theta_s),R_h[coord,file_number]),np.subtract(Z_s(Theta_s),Z_h[coord,file_number])])
+    return np.array([np.subtract(R_s(Theta_s),R_h[coord,file_number]),np.subtract(Z_s(Theta_s),Z_h[coord,file_number])]).squeeze()
 
 ### Creating Functions to be used in Jacobian Variable ###
 # defining the derivatives with repsect to Theta_s of R_s
@@ -46,7 +48,7 @@ def Z_s_deriv(Theta_s):
 
 # defining the Jacobian that will be used in the least squares method
 def chi_squared_jac(Theta_s):
-    return np.array(([R_s_deriv(Theta_s)],[Z_s_deriv(Theta_s)])) 
+    return np.array(([R_s_deriv(Theta_s),Z_s_deriv(Theta_s)])) 
 
 ### Using Least Squares Function ###
 # using the least squares method to find the closest Theta_s
