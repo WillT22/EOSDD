@@ -45,14 +45,6 @@ vessel_coords = grid;
     patch('Faces',vessel_coords.faces,'Vertices',vessel_coords.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
 hold on
 
-%{
-% Using the least squares method with an imported data table
-Theta_lines = Theta_test2;
-
-Phi_lines = random_torus_hitpoints(:,2);
-Theta_lines = random_torus_hitpoints(:,4);
-%}
-
 plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 
 xlim([0,2*pi]);

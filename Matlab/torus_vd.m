@@ -19,6 +19,9 @@ function [torus_vd] = torus_vd(R, r, p, t)
           error('4 inputs are accepted.')
   end
  
+torus_vd.R = R;
+torus_vd.r = r;
+  
  %%%%%%%%%%%%%%%% Create Vertex and Face Data %%%%%%%%%%%%%%%%%
 a = p*t; % number of vertices that will be used
 

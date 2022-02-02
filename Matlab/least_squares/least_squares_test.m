@@ -34,10 +34,15 @@ rand_co.theta(idxi.high) = rand_co.theta(idxi.high) - (2*pi);
 clear idx
 clear idxi
 
+R = toroidal_data.R;
+r = toroidal_data.r;
 % outputing data for use
 perturbed_toroidal.coords(:,1) = (ones(number_of_coordinates,1)*R) + (r*cos(rand_co.theta));
 perturbed_toroidal.coords(:,2) = rand_co.phi;
 perturbed_toroidal.coords(:,3) = r.*sin(rand_co.theta);
+perturbed_toroidal.R = (ones(number_of_coordinates,1)*R) + (r*cos(rand_co.theta));
+perturbed_toroidal.Phi = rand_co.phi;
+perturbed_toroidal.Z = r.*sin(rand_co.theta);
 perturbed_toroidal.exact_theta = rand_co.theta;
 
 % plotting created hitpoints
