@@ -2,21 +2,33 @@ import numpy as np
 import nescin_read as nescin
 from scipy.optimize import least_squares
 
-### Import Vessel nescin File ###
+
+### Input Files ###
+# Import Vessel nescin File 
+print('Importing vessel data')
 M = nescin.M
 N = nescin.N
 crc2 = nescin.crc2
 czs2 = nescin.czs2
 
-### Import Hit Point Data ###
+# Import Hit Point Data
 import hitpoint_data as hpd # imports hitpoint data variables
-#+ import theta_approx as ta # imports theta approximations found in the theta_approx file
 
-# importing coordtinates data from hitpoint data set
+# Importing coordtinates data from hitpoint data set
 print('importing hitpoint data')
 Phi_h = hpd.Phi[:]
 R_h = hpd.R[:]
 Z_h = hpd.Z[:]
+
+# Preparing Approximate Theta
+Theta_approx = np.loadtxt('./tests/torus_test/torus_test_Theta_p.dat')
+# for bypasing saved data file and using the function directly use the following lines instead
+#+ import theta_approx as ta # imports theta approximations found in the theta_approx file
+#+ Theta_approx = ta.Theta_approx[:]
+
+# file where theta data will be printed
+data_file = "toroidal_theta_test.dat"
+
 
 ### Creating Functions to be used in Least Squares Calculation ###
 # creating functions for R_s and Z_s
@@ -42,11 +54,6 @@ def Z_s(Theta_s,M,N,Phi_h):
 def chi_squared(Theta_s):
     return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h[coord,file_number]),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h[coord,file_number])])
 
-### Preparing Approximate Theta ###
-Theta_approx = np.loadtxt('Theta_approx_10.dat')
-# for bypasing saved data file and using the function directly use the following line instead
-#Theta_approx = ta.Theta_approx[:]
-
 ### Creating Functions to be used in Jacobian Variable ###
 # defining the derivatives with repsect to Theta_s of R_s
 def R_s_deriv(Theta_s,M,N,Phi_h):
@@ -71,6 +78,7 @@ def Z_s_deriv(Theta_s,M,N,Phi_h):
 # defining the Jacobian that will be used in the least squares method
 def chi_squared_jac(Theta_s):
     return np.array(([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)])) 
+
 
 ### Using Least Squares Function ###
 # using the least squares method to find the closest Theta_s
