@@ -40,14 +40,14 @@ r_mnc = repmat(fourier_coeff.crc2',a,1);
 r_elementarr = r_mnc .* cos(M .* Theta + 3 * N .* Phi); 
 toroidal_vd.R = sum(r_elementarr,2);
 
-toroidal_vd.Phi = Phi(:,1);
+toroidal_vd.phi = Phi(:,1);
 
 % z component
 z_mns = repmat(fourier_coeff.czs2',a,1);
 z_elementarr = z_mns .* sin(M .* Theta + 3 * N .* Phi);
 toroidal_vd.Z = sum(z_elementarr,2);
 
-toroidal_vd.Theta = Theta(:,1);
+toroidal_vd.theta = Theta(:,1);
 
 % convert polar coordinates to Cartesian coordinates
 toroidal_vd.X = toroidal_vd.R .* cos(Phi(:,1));
