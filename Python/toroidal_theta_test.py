@@ -16,15 +16,15 @@ import hitpoint_data as hpd # imports hitpoint data variables
 
 # Importing coordtinates data from hitpoint data set
 print('importing hitpoint data')
-Phi_h = hpd.Phi[:]
-R_h = hpd.R[:]
-Z_h = hpd.Z[:]
+Phi_h = np.loadtxt('./tests/toroidal_test/toroidal_test_Phi.dat')
+R_h = np.loadtxt('./tests/toroidal_test/toroidal_test_R.dat')
+Z_h = np.loadtxt('./tests/toroidal_test/toroidal_test_Z.dat')
 
 # Preparing Approximate Theta
-Theta_approx = np.loadtxt('./tests/torus_test/torus_test_Theta_p.dat')
+Theta_approx = np.loadtxt('./tests/toroidal_test/toroidal_test_theta_approx.dat')
 # for bypasing saved data file and using the function directly use the following lines instead
-#+ import theta_approx as ta # imports theta approximations found in the theta_approx file
-#+ Theta_approx = ta.Theta_approx[:]
+#+import theta_approx as ta # imports theta approximations found in the theta_approx file
+#+Theta_approx = ta.Theta_approx[:]
 
 # file where theta data will be printed
 data_file = "toroidal_theta_test.dat"
@@ -81,27 +81,29 @@ def chi_squared_jac(Theta_s):
 
 
 ### Using Least Squares Function ###
-# viewing each column in the input files
+# using the least squares method to find the closest Theta_s
+print('finding least square')
+# for each column in the input files
 try:
     file_columns = Phi_h.shape[1]
 except IndexError: # when there is only one column
-    file_columns = 1
+    file_columns = 1 
     # changing all arrays that use two dimensions to 2D arrays
     Phi_h = Phi_h.reshape((Phi_h.shape[0],1))
     R_h = R_h.reshape((Phi_h.shape[0],1))
     Z_h = Z_h.reshape((Phi_h.shape[0],1))
     Theta_approx = Theta_approx.reshape((Theta_approx.shape[0],1))
 Theta_s_result = np.empty([Phi_h.shape[0],file_columns]) # initializing final array based off of input file size
-
-# using the least squares method to find the closest Theta_s
-print('finding least square')
-Theta_s_result = np.empty_like(Phi_h)
-for file_number in range(Phi_h.shape[1]):
+for file_number in range(file_columns):
     print('file number', file_number)
     for coord in range(Phi_h.shape[0]):    
         if coord % 100 == 0:
             print('computing theta', coord)
         Theta_result_temp = least_squares(chi_squared, Theta_approx[coord,file_number], chi_squared_jac, method='lm')
         Theta_s_result[coord,file_number] = Theta_result_temp.x
+        if Theta_s_result[coord,file_number] < 0:
+            Theta_s_result[coord,file_number] = Theta_s_result[coord,file_number] + 2*np.pi
+        elif Theta_s_result[coord,file_number] > 2*np.pi:
+            Theta_s_result[coord,file_number] = Theta_s_result[coord,file_number] - 2*np.pi
 
 np.savetxt(data_file,Theta_s_result)
