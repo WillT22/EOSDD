@@ -1,12 +1,12 @@
 toroidal_test = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10',180,90);
 
-%%%%%% Perturbing Theta and Phi %%%%%%
+%% Perturbing Theta and Phi %%
 number_of_coordinates = length(toroidal_test.phi);
-%%% Initializing Randomization Stream %%%
+% Initializing Randomization Stream %
 stream = load('/u/wteague/EOSDD/Matlab/least_squares/least_squares_stream.mat');
 stream = stream.stream;
 
-%%% Setting up Randomization %%%
+% Setting up Randomization %
 % for Phi variable
 min_phi = -(2*pi/180);   % minimum value to add to phi
 max_phi =  (2*pi/180);   % maximum value to add to phi
@@ -67,4 +67,42 @@ perturbed_toroidal.coords(:,2) = perturbed_toroidal.Phi;
 perturbed_toroidal.coords(:,3) = perturbed_toroidal.Z;
 perturbed_toroidal.exact_theta = rand_co.theta;
 
+toroidal_theta_test = importdata('./EOSDD/Python/tests/toroidal_test/toroidal_theta_test.dat');
+%plot_2d(perturbed_toroidal.Phi, perturbed_toroidal.exact_theta)
+%plot_2d(perturbed_toroidal.Phi, toroidal_theta_test(:,1))
+
+
+%% Error Analysis %%
+% relative error
+relative_error = abs((toroidal_theta_test - perturbed_toroidal.exact_theta)./perturbed_toroidal.exact_theta);
+rel_error_arr = [perturbed_toroidal.exact_theta, relative_error];
+rel_error_arr = sortrows(rel_error_arr,1);
+
+figure
+plot(rel_error_arr(:,1),rel_error_arr(:,2),'.','Color','red')
+xlabel('Exact Theta');
+ylabel('Relative Error');
+xlim([0,2*pi]);
+
+% absolute error
+absolute_error = abs((toroidal_theta_test - perturbed_toroidal.exact_theta));
+abs_error_arr = [perturbed_toroidal.exact_theta, absolute_error];
+abs_error_arr = sortrows(abs_error_arr,1);
+
+figure
+plot(abs_error_arr(:,1),abs_error_arr(:,2),'.','Color','red')
+xlabel('Exact Theta');
+ylabel('Absolute Error');
+xlim([0,2*pi]);
+
+%{
+% for examining the error as theta approaches 0
+figure
+plot(relative_error_nonzero1(:,1),relative_error_nonzero1(:,2),'Marker','.','Color','red')
+set(gca, 'YScale', 'log');
+xlabel('Exact Theta');
+ylabel('Relative Error');
+xlim([0,0.06]);
+ylim([0,2.5*10^4]);
+%}
 

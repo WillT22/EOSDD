@@ -108,8 +108,9 @@ clear idxi
 
 %plot_2d(perturbed_torus.Phi, perturbed_torus.exact_theta)
 
-torus_theta_test = importdata('EOSDD/Python/torus_theta_test.dat');
-%plot_2d(perturbed_torus.Phi, torus_theta_test(:,1))
+torus_theta_test = importdata('EOSDD/Python/tests/torus_test/torus_theta_test.dat');
+%plot_2d(perturbed_torus.Phi, perturbed_torus.exact_theta);
+%plot_2d(perturbed_torus.Phi, torus_theta_test(:,1));
 
 Phi_ne = [];
 exact_Theta_ne = [];
@@ -126,12 +127,36 @@ end
 
 
 %%%%%% Error Analysis %%%%%%
+% relative error
 relative_error = abs((torus_theta_test - perturbed_torus.exact_theta)./perturbed_torus.exact_theta);
-%error = [perturbed_torus.exact_theta,relative_error]
-absolute_error = abs((torus_theta_test - perturbed_torus.exact_theta));
-error = [perturbed_torus.exact_theta,absolute_error];
-error = sortrows(error,1);
+rel_error_arr = [perturbed_torus.exact_theta, relative_error];
+rel_error_arr = sortrows(rel_error_arr,1);
 
+figure
+plot(rel_error_arr(:,1),rel_error_arr(:,2),'.','Color','red')
+xlabel('Exact Theta');
+ylabel('Relative Error');
+xlim([0,2*pi]);
+
+% absolute error
+absolute_error = abs((torus_theta_test - perturbed_torus.exact_theta));
+for j = 1:size(absolute_error,2)
+    for i = 1:size(absolute_error,1)
+        if absolute_error(i,j) > pi
+            absolute_error(i,j) = absolute_error(i,j)-(2*pi);
+        end
+    end
+end
+abs_error_arr = [perturbed_torus.exact_theta, absolute_error];
+abs_error_arr = sortrows(abs_error_arr,1);
+
+figure
+plot(abs_error_arr(:,1),abs_error_arr(:,2),'.','Color','red')
+xlabel('Exact Theta');
+ylabel('Absolute Error');
+xlim([0,2*pi]);
+
+%{
 error_nonzero_theta = [];
 error_nonzero_temp = [];
 for i = 1:size(error(:,1))    
@@ -145,7 +170,7 @@ error_nonzero(:,1) = error_nonzero_theta;
 
 error_nonzero1 = [];
 error_nonzero2 = [];
-for i = 1:size(error_nonzero(:,1))    
+for i = 1:size(error_nonzero,1)    
     if error_nonzero(i,2) > 10
         error_nonzero1 = [error_nonzero1; error_nonzero(i,:)];
     else    
@@ -153,15 +178,6 @@ for i = 1:size(error_nonzero(:,1))
     end
 end
 
-figure
-%plot(relative_error_nonzero1(:,1),relative_error_nonzero1(:,2),'Color','red')
-hold on
-plot(error(:,1),error(:,2),'.','Color','red')
-xlabel('Exact Theta');
-ylabel('Absolute Error');
-xlim([0,2*pi]);
-
-%{
 % for examining the error as theta approaches 0
 figure
 plot(relative_error_nonzero1(:,1),relative_error_nonzero1(:,2),'Marker','.','Color','red')
