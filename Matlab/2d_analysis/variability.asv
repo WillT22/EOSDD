@@ -67,7 +67,7 @@ end
 %%% HYPOTENUSE
 for f = 1:size(PHI_assign,2)
    for i = 1:size(PHI_assign,1)
-       if PHI_assign(i,f) + THETA_assign(i,f) <= phi(PHI_assign(i,f)) + theta(THETA_assign(i,f))
+       if PHI_assign(i,f) + THETA_assign(i,f) <= phi(PHI_assign(i,f)) + theta(THETA_assign(i,f)) + phi(2)
            trig_assign(i,f) = 1;
        else
            trig_assign(i,f) = 2;
