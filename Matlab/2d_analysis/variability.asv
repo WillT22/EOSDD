@@ -37,37 +37,19 @@ for f = 1:size(PHI_data,2)
     end
 end
 % assigning Phi
-for f = 1:size(PHI_data,2)
-   for i = 1:size(PHI_data,1)
-       % Determining lower bound Phi coordinate
-       for p = length(phi)-1:-1:1
-           if PHI_data(i,f) < phi(p)
-               PHI_assign(i,f) = p-1;
-           else
-               break
-           end
-       end
-   end
-end
+PHI_scale = (PHI_data ./ phi(2)) +1; % scaling phi in terms of phi variable (phi starts at 0)
+PHI_assign = floor(PHI_scale); % rounding to lower bound 
 
 %%% THETA
-for f = 1:size(THETA_data,2)
-   for i = 1:size(THETA_data,1)
-       % Determining lower bound Theta coordinate
-       for t = length(theta)-1:-1:1
-           if THETA_data(i,f) < theta(t)
-               THETA_assign(i,f) = t-1;
-           else
-               break
-           end
-       end
-   end
-end
+THETA_scale = (THETA_data ./ theta(2)) +1; % scaling phi in terms of phi variable (theta starts at 0)
+THETA_assign = floor(THETA_scale); % rounding to lower bound
 
 %%% HYPOTENUSE
 for f = 1:size(PHI_assign,2)
    for i = 1:size(PHI_assign,1)
-       if PHI_assign(i,f) + THETA_assign(i,f) <= phi(PHI_assign(i,f)) + theta(THETA_assign(i,f)) + phi(2)
+       left(i,f) = PHI_scale(i,f) + THETA_scale(i,f);
+       right(i,f) = PHI_assign(i,f) + THETA_assign(i,f) + 1;
+       if PHI_scale(i,f) + THETA_scale(i,f) <= PHI_assign(i,f) + THETA_assign(i,f) + 1
            trig_assign(i,f) = 1;
        else
            trig_assign(i,f) = 2;
