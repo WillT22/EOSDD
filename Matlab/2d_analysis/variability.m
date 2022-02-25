@@ -10,11 +10,15 @@ function variation = variability(hitpoint_data, Theta_data, option)
           error('2 inputs are accepted.')
   end
 %}
+fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
+    fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
+    fldlns_Cbar4_f_10, fldlns_Cbar4_r_10, fldlns_Cbar5_f_10,...
+    fldlns_Cbar5_r_10];
 hitpoint_data = fieldline_file;
-THETA_data = importdata('../EOSDD/Python/Theta_Cbar_10.dat');
+THETA_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 option = 0;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
-%% Assigning all Hit Points to a Triangle
+%% Assigning Hit Points to Triangles
 p_div=180;
 t_div=90;
 ntrig = p_div*t_div*2;
@@ -37,24 +41,27 @@ for f = 1:size(PHI_data,2)
     end
 end
 % assigning Phi
-PHI_scale = (PHI_data ./ phi(2)) +1; % scaling phi in terms of phi variable (phi starts at 0)
+PHI_scale = (PHI_data ./ phi(2)) +1; % scaling phi in terms of phi variable (indexing starts at 1)
 PHI_assign = floor(PHI_scale); % rounding to lower bound 
 
 %%% THETA
-THETA_scale = (THETA_data ./ theta(2)) +1; % scaling phi in terms of phi variable (theta starts at 0)
+THETA_scale = (THETA_data ./ theta(2)) +1; % scaling phi in terms of phi variable (indexing starts at 1)
 THETA_assign = floor(THETA_scale); % rounding to lower bound
 
 %%% HYPOTENUSE
 for f = 1:size(PHI_assign,2)
    for i = 1:size(PHI_assign,1)
-       % add 1 on the right hand side to account for decimal addition from both theta and phi
-       if PHI_scale(i,f) + THETA_scale(i,f) <= PHI_assign(i,f) + THETA_assign(i,f) + 1 
-           trig_assign(i,f) = 1;
+       if (PHI_scale(i,f) - PHI_assign(i,f))  ...
+               + (THETA_scale(i,f) - THETA_assign(i,f)) < 1
+           HYPO_assign(i,f) = 0; % lower left triangle
        else
-           trig_assign(i,f) = 2;
+           HYPO_assign(i,f) = 1; % upper right triangle
        end
    end
 end
+
+%%% Assigning to a Triangle
+
 
 %% Finding Hit Points/Unit Area/Total Number of Hit Points
 if option == 0
