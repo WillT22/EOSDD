@@ -1,4 +1,4 @@
-figure;
+%figure
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/29/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % to show the comparison between the original flux surface and the
@@ -50,8 +50,15 @@ fieldline_file_r = [fldlns_Cbar1_r_10, fldlns_Cbar2_r_10, fldlns_Cbar3_r_10,...
     fldlns_Cbar4_r_10, fldlns_Cbar5_r_10];
 vessel_file = pcs_10;
 
-toroidal_graph(vessel_file);
+toroidal_graph(vessel_file,0);
 hold on
+%plot3(calculated_coordinates.R(7812,2).*cos(PHI_data(7812,2)),...
+%    calculated_coordinates.R(7812,2).*sin(PHI_data(7812,2)),...
+%    calculated_coordinates.Z(7812,2),'.','color','red');
+plot3(calculated_coordinates.R(13744,2).*cos(PHI_data(13744,2)),...
+    calculated_coordinates.R(13744,2).*sin(PHI_data(13744,2)),...
+    calculated_coordinates.Z(13744,2),'.','color','red');
+%{
 for i = 1:size(fieldline_file_f,2)
 plot3(fieldline_file_f(i).X_lines(:,2), fieldline_file_f(i).Y_lines(:,2), fieldline_file_f(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
 plot3(fieldline_file_r(i).X_lines(:,2), fieldline_file_r(i).Y_lines(:,2), fieldline_file_r(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
@@ -149,5 +156,5 @@ grid on;
 xlabel('X (meters)');
 ylabel('Y (meters)');
 zlabel('Z (meters)');
- set(gca, 'CameraPosition', [0 0 2000]); % top view
+% set(gca, 'CameraPosition', [0 0 2000]); % top view
 % set(gca, 'CameraPosition', [0 0 -2000]); % bottom view

@@ -18,7 +18,7 @@ nfacetot = size(toroidal_coordinates.faces,1);               % finds the number 
 
 if g_option == 0
     % Option 0: plot of the vertices
-    plot3(toroidal_coordinates.vertices(:,1),toroidal_coordinates.vertices(:,2),toroidal_coordinates.vertices(:,3), 'linestyle', 'none', 'marker', '.','color','k')
+    plot3(toroidal_coordinates.vertices(:,1),toroidal_coordinates.vertices(:,2),toroidal_coordinates.vertices(:,3), 'linestyle', 'none', 'marker', '.','color',[0.6 0.6 0.6])
 elseif g_option == 1
     % Option 1: to see the whole torus
     patch('Faces',toroidal_coordinates.faces,'Vertices',toroidal_coordinates.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [0.8 0.8 0.8]);
