@@ -88,7 +88,7 @@ xlim([0,2*pi]);
 %}
 
 % absolute error for R
-absolute_error_R = abs((R_lines_10 - calculated_coordinates.R));
+absolute_error_R = (R_lines_10 - calculated_coordinates.R);
 max_error_R.absolute = max(max(absolute_error_R));
 [max_error_R.absolute_indicies(1), max_error_R.absolute_indicies(2)] = ...
     find(absolute_error_R == max_error_R.absolute);
@@ -98,13 +98,16 @@ R_true_error.mean_error = sum(absolute_error_R,'all')/numel(absolute_error_R);
 R_true_error.std_dev = sqrt(sum((absolute_error_R-R_true_error.mean_error).^2,'all')/numel(absolute_error_R));
 
 figure
-histogram(absolute_error_R,10000)
+histogram(absolute_error_R,100000)
 hold on
 xline(R_true_error.mean_error, '--', 'Mean','Color','r')
-xline(R_true_error.mean_error + R_true_error.std_dev, '--', 'Standard Deviation','Color','b')
-xline(R_true_error.mean_error + 2*R_true_error.std_dev, '--','Color','b')
-xline(R_true_error.mean_error + 3*R_true_error.std_dev, '--','Color','b')
-xlim([0,max_error_R.absolute])
+xline(R_true_error.mean_error + R_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
+xline(R_true_error.mean_error - R_true_error.std_dev, '-', '-1 Standard Deviation','Color','b')
+xline(R_true_error.mean_error + 2*R_true_error.std_dev, '--', '+2 Standard Deviation','Color','b')
+xline(R_true_error.mean_error - 2*R_true_error.std_dev, '--', '-2 Standard Deviation','Color','b')
+xline(R_true_error.mean_error + 3*R_true_error.std_dev, '-.', '+3 Standard Deviation','Color','b')
+xline(R_true_error.mean_error - 3*R_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
+xlim([-max_error_R.absolute,max_error_R.absolute])
 xlabel('True Error for R')
 
 %{
@@ -123,7 +126,7 @@ xlim([0,2*pi]);
 
 % relative error for Z
 relative_error_Z = abs((Z_lines_10 - calculated_coordinates.Z)./Z_lines_10);
-max_error_Z.relative = max(max(relative_error_Z));
+max_error_Z.relative = max(max(abs(relative_error_Z)));
 [max_error_Z.relative_indicies(1), max_error_Z.relative_indicies(2)] = ...
     find(relative_error_Z == max_error_Z.relative);
 rel_error_arr_Z = [linspace(0,2*pi,size(Z_lines_10,1))', relative_error_Z];
@@ -145,23 +148,26 @@ xlim([0,2*pi]);
 %}
 
 % absolute error for Z
-absolute_error_Z = abs((Z_lines_10 - calculated_coordinates.Z));
-max_error_Z.absolute = max(max(absolute_error_Z));
+absolute_error_Z = (Z_lines_10 - calculated_coordinates.Z);
+max_error_Z.absolute = max(max(abs(absolute_error_Z)));
 [max_error_Z.absolute_indicies(1), max_error_Z.absolute_indicies(2)] = ...
-    find(absolute_error_Z == max_error_Z.absolute);
+    find(absolute_error_Z == -max_error_Z.absolute);
 abs_error_arr_Z = [linspace(0,2*pi,size(Z_lines_10,1))', absolute_error_Z];
 abs_error_arr_Z = sortrows(abs_error_arr_Z,1);
 Z_true_error.mean_error = sum(absolute_error_Z,'all')/numel(absolute_error_Z);
 Z_true_error.std_dev = sqrt(sum((absolute_error_Z-Z_true_error.mean_error).^2,'all')/numel(absolute_error_R));
 
 figure
-histogram(absolute_error_Z,10000)
+histogram(absolute_error_Z,100000)
 hold on
 xline(Z_true_error.mean_error, '--', 'Mean','Color','r')
-xline(Z_true_error.mean_error + Z_true_error.std_dev, '--', 'Standard Deviation','Color','b')
-xline(Z_true_error.mean_error + 2*Z_true_error.std_dev, '--','Color','b')
-xline(Z_true_error.mean_error + 3*Z_true_error.std_dev, '--','Color','b')
-xlim([0,max_error_Z.absolute])
+xline(Z_true_error.mean_error + Z_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
+xline(Z_true_error.mean_error - Z_true_error.std_dev, '-', '-1 Standard Deviation','Color','b')
+xline(Z_true_error.mean_error + 2*Z_true_error.std_dev, '--', '+2 Standard Deviation','Color','b')
+xline(Z_true_error.mean_error - 2*Z_true_error.std_dev, '--', '-2 Standard Deviation','Color','b')
+xline(Z_true_error.mean_error + 3*Z_true_error.std_dev, '-.', '+3 Standard Deviation','Color','b')
+xline(Z_true_error.mean_error - 3*Z_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
+xlim([-max_error_Z.absolute,max_error_Z.absolute])
 xlabel('True Error for Z')
 
 %{
