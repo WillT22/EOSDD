@@ -35,14 +35,13 @@ faces.upper(t+1:t+1:end,:) = [];
 grid.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper and lower triangular face arrays using every other row
 
 %%% Plotting the Figure %%%
-figure;
+%figure;
 
 % plotting the vessel on a 2D grid of Theta vs. Phi
-vessel_coords = grid;
 % plotting only the vertices
     %plot(vessel_coords.vertices(:,1),vessel_coords.vertices(:,2),'.');
 % plotting connected vertices in faces
-    patch('Faces',vessel_coords.faces,'Vertices',vessel_coords.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
+patch('Faces',grid.faces,'Vertices',grid.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
 hold on
 
 plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
