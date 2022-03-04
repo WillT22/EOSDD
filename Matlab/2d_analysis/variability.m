@@ -1,13 +1,23 @@
 %{
-function variance = variability(hitpoint_data, Theta_data, stream, option)
+function variance = variability(hitpoint_data, Theta_data, vessel_data, rand_stream, option)
+
+  % hitpoint_data is imported from FIELDLINES in the following format:
+    %{
+    fieldline_file = [fieldline_forward_run1, fieldline_reverse_run1,...
+                     fieldline_forward_run2, fieldline_reverse_run2,...];
+    %}
+  % Theta_data is data collected from least_squares function (see theta_coordinate.py)
+  % vessel_data is created by the function toroidal_mesh from a nescin file
+    % needed for triangular area calculation function located in the function
+  % rand_stream is optional and if no stream is given, function is uniquely randomized every time
+  % option allows for calculations to be unique to statistical needs
 
   %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
-      case 1            % if two inputs are empty, use these default parameters
-          stream = load('/u/wteague/EOSDD/Matlab/least_squares/least_squares_stream.mat');
+      case 3            % if two inputs are empty, use these default parameters
+          stream = RandStream('mt19937');
           stream = stream.stream;
           option = 0;
-      case 2
       otherwise         % else throw error
           error('2 inputs are accepted.')
   end
@@ -18,9 +28,11 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar5_r_10];
 hitpoint_data = fieldline_file;
 data.THETA_coords = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
-option = 0;
+vessel_data = pcs_10;
+% correct stream for function mode
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
+option = 0;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -73,18 +85,23 @@ data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data
     ndata_points = size(data.PHI_coords,1)*size(data.PHI_coords,2);
     % set up edges for counting the number of hit points in the triangle
     index_vector = linspace(1,p_div*t_div*2+1,p_div*t_div*2+1)';
-    % count the number of hitpoints that are in each triangle
+    % count the number of hit points that are in each triangle
     data.nhp_trig = histcounts(data.TRIG_assign,index_vector)';
+    % finding ratio of hit points per triangular section
+    data.hp_trig_ratio = data.nhp_trig ./ ndata_points;
     % finding hitpoints/unit area/total number of hit points
+        % ratio of hit points per triangular section per meter^2
+    data.hp_trig_area = data.nhp_trig ./ vessel_data.Areas ./ ndata_points;
 
 %% Finding Hit Points/Unit Area/Total Number of Hit Points
 if option == 0
-    
+    %{
     figure
     plot_2d(data.PHI_coords, data.THETA_coords);
     hold on
     patch('Faces',grid.faces(20392,:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
     alpha(0.5);
+    %}
     
 %% Finding Variance for 10 Samples of 10% of inputted data
 elseif option == 1

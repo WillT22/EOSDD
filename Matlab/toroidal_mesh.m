@@ -5,8 +5,8 @@ function [toroidal_vd] = toroidal_mesh(nescin_file, p, t)
 %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
       case 1            % if t and p are empty, use default parameters
-          p = 36;
-          t = 18;
+          p = 180;
+          t = 90;
       case 3    
       otherwise         % else throw error
           error('4 inputs are accepted.')
@@ -40,23 +40,23 @@ r_mnc = repmat(fourier_coeff.crc2',a,1);
 r_elementarr = r_mnc .* cos(M .* Theta + 3 * N .* Phi); 
 toroidal_vd.R = sum(r_elementarr,2);
 
-toroidal_vd.phi = Phi(:,1);
+toroidal_vd.Phi = Phi(:,1);
 
 % z component
 z_mns = repmat(fourier_coeff.czs2',a,1);
 z_elementarr = z_mns .* sin(M .* Theta + 3 * N .* Phi);
 toroidal_vd.Z = sum(z_elementarr,2);
 
-toroidal_vd.theta = Theta(:,1);
+toroidal_vd.Theta = Theta(:,1);
 
 % convert polar coordinates to Cartesian coordinates
 toroidal_vd.X = toroidal_vd.R .* cos(Phi(:,1));
 toroidal_vd.Y = toroidal_vd.R .* sin(Phi(:,1));
 
 % create vessel data from Cartesian coordinates
-toroidal_vd.vertices(:,1) = toroidal_vd.X;
-toroidal_vd.vertices(:,2) = toroidal_vd.Y;
-toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
+toroidal_vd.Vertices(:,1) = toroidal_vd.X;
+toroidal_vd.Vertices(:,2) = toroidal_vd.Y;
+toroidal_vd.Vertices(:,3) = sum(z_elementarr,2);
 
 % triangular faces
     % lower triangles:
@@ -70,15 +70,15 @@ toroidal_vd.vertices(:,3) = sum(z_elementarr,2);
     faces.upper(:,2) = [faces.upper(1:end-t,1)+t;(2:t)';1];
     faces.upper(:,3) = [t+1:a,1:t];
     
-toroidal_vd.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper and lower triangular face arrays using every other row
+toroidal_vd.Faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper and lower triangular face arrays using every other row
 
-% Finding the area of each triangle in the mesh
-for i = 1:size(toroidal_vd.faces,1)
-    AB(i,:) = toroidal_vd.vertices(toroidal_vd.faces(i,2),:) - toroidal_vd.vertices(toroidal_vd.faces(i,1),:);
-    AC(i,:) = toroidal_vd.vertices(toroidal_vd.faces(i,3),:) - toroidal_vd.vertices(toroidal_vd.faces(i,1),:);
+% Finding the area of each triangle in the mesh in meters
+for i = 1:size(toroidal_vd.Faces,1)
+    AB(i,:) = toroidal_vd.Vertices(toroidal_vd.Faces(i,2),:) - toroidal_vd.Vertices(toroidal_vd.Faces(i,1),:);
+    AC(i,:) = toroidal_vd.Vertices(toroidal_vd.Faces(i,3),:) - toroidal_vd.Vertices(toroidal_vd.Faces(i,1),:);
     Cross(i,:) = cross(AB(i,:),AC(i,:));
     Norm(i,1) = norm(cross(AB(i,:),AC(i,:)));
-    toroidal_vd.areas(i,1) = 1/2 * norm(cross(AB(i,:),AC(i,:)));
+    toroidal_vd.Areas(i,1) = 1/2 * norm(cross(AB(i,:),AC(i,:)));
 end
 
 end
