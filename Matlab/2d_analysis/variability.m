@@ -1,5 +1,5 @@
 %{
-function variation = variability(hitpoint_data, Theta_data, stream, option)
+function variance = variability(hitpoint_data, Theta_data, stream, option)
 
   %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
@@ -18,7 +18,7 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar5_r_10];
 hitpoint_data = fieldline_file;
 data.THETA_coords = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
-option = 3;
+option = 0;
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
@@ -65,14 +65,26 @@ for f = 1:size(data.PHI_assign,2)
 end
 
 %%% Assigning to a Triangle
-data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data.HYPO_assign
+data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data.HYPO_assign;
 
 %%%% Finding Variance for Hitpoints %%%%
 % setting up universal variables
-ndata_points = size(data.PHI_coords,1)*size(data.PHI_coords,2);
+    % finding total number of hit points
+    ndata_points = size(data.PHI_coords,1)*size(data.PHI_coords,2);
+    % set up edges for counting the number of hit points in the triangle
+    index_vector = linspace(1,p_div*t_div*2+1,p_div*t_div*2+1)';
+    % count the number of hitpoints that are in each triangle
+    data.nhp_trig = histcounts(data.TRIG_assign,index_vector)';
+    % finding hitpoints/unit area/total number of hit points
 
 %% Finding Hit Points/Unit Area/Total Number of Hit Points
 if option == 0
+    
+    figure
+    plot_2d(data.PHI_coords, data.THETA_coords);
+    hold on
+    patch('Faces',grid.faces(20392,:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
+    alpha(0.5);
     
 %% Finding Variance for 10 Samples of 10% of inputted data
 elseif option == 1
