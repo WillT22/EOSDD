@@ -66,25 +66,28 @@ end
 
 %% Error Analysis %%
 % absolute error for R
-absolute_error_R = (R_lines_10 - calculated_coordinates.R);
+error_R = R_lines_10 - calculated_coordinates.R;
+absolute_error_R = abs(error_R);
 max_error_R.absolute = max(max(absolute_error_R));
 min_error_R.absolute = min(min(absolute_error_R));
 [max_error_R.absolute_indicies(1), max_error_R.absolute_indicies(2)] = ...
     find(absolute_error_R == max_error_R.absolute);
 
 %{
+angle_a = 5*pi/12;
+angle_b = 19*pi/12
 % points of the exterior of the surface
 R_lines_10_out = [];
 calculated_coordinates.R_out = [];
 for j = 1:size(THETA_lines_10,2)
     for i = 1:size(THETA_lines_10,1)
-        if THETA_lines_10(i,j) <= pi
+        if THETA_lines_10(i,j) <= angle_a || THETA_lines_10(i,j) > angle_b
             R_lines_10_out = [R_lines_10_out, R_lines_10(i,j)];
             calculated_coordinates.R_out = [calculated_coordinates.R_out, calculated_coordinates.R(i,j)];
         end
     end
 end
-%absolute_error_R = (R_lines_10_out - calculated_coordinates.R_out);
+absolute_error_R = (R_lines_10_out - calculated_coordinates.R_out);
 
 
 % points of the interior of the surface
@@ -92,13 +95,14 @@ R_lines_10_in = [];
 calculated_coordinates.R_in = [];
 for j = 1:size(THETA_lines_10,2)
     for i = 1:size(THETA_lines_10,1)
-        if THETA_lines_10(i,j) > pi
+        if THETA_lines_10(i,j) > angle_a && THETA_lines_10(i,j) <= angle_b
             R_lines_10_in = [R_lines_10_in, R_lines_10(i,j)];
             calculated_coordinates.R_in = [calculated_coordinates.R_in, calculated_coordinates.R(i,j)];
         end
     end
 end
-%absolute_error_R = (R_lines_10_in - calculated_coordinates.R_in);
+absolute_error_R = (R_lines_10_in - calculated_coordinates.R_in);
+
 
 R_true_error.mean_error = sum(absolute_error_R,'all')/numel(absolute_error_R);
 R_true_error.std_dev = sqrt(sum((absolute_error_R-R_true_error.mean_error).^2,'all')/numel(absolute_error_R));
@@ -125,7 +129,6 @@ ylabel('Absolute Error');
 title('Absolute Error for R v Theta')
 xlim([0,2*pi]);
 
-    
 
 % relative error for R
 %{
@@ -146,10 +149,11 @@ xlim([0,2*pi]);
 %}
 
 % absolute error for Z
-absolute_error_Z = (Z_lines_10 - calculated_coordinates.Z);
-max_error_Z.absolute = max(max(abs(absolute_error_Z)));
+error_Z = Z_lines_10 - calculated_coordinates.Z;
+absolute_error_Z = abs(error_Z);
+max_error_Z.absolute = max(max(absolute_error_Z));
 [max_error_Z.absolute_indicies(1), max_error_Z.absolute_indicies(2)] = ...
-    find(absolute_error_Z == -max_error_Z.absolute);
+    find(absolute_error_Z == max_error_Z.absolute);
 Z_true_error.mean_error = sum(absolute_error_Z,'all')/numel(absolute_error_Z);
 Z_true_error.std_dev = sqrt(sum((absolute_error_Z-Z_true_error.mean_error).^2,'all')/numel(absolute_error_R));
 
@@ -168,7 +172,7 @@ xlim([-max_error_Z.absolute,max_error_Z.absolute])
 xlabel('True Error for Z')
 %}
 
-%{
+
 figure
 hold on
 plot(THETA_lines_10,absolute_error_Z,'.','Color','red')
@@ -176,7 +180,7 @@ xlabel('Theta');
 ylabel('Absolute Error');
 title('Absolute Error for Z v Theta')
 xlim([0,2*pi]);
-%}
+
 
 % relative error for Z
 %{

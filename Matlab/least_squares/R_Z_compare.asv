@@ -18,19 +18,19 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
 % R_lines
 R_lines_10 = [];
 for i = 1:length(fieldline_file)
-    R_lines_10 = [R_lines_10 fieldline_file(i).R_lines(:,2)];
+    R_lines_10 = [R_lines_10, fieldline_file(i).R_lines(:,2)];
 end
 R_lines_10 = reshape(R_lines_10, 40000,5);
 % PHI_lines
 PHI_lines_10 = [];
 for i = 1:length(fieldline_file)
-    PHI_lines_10 = [PHI_lines_10 fieldline_file(i).PHI_lines(:,2)];
+    PHI_lines_10 = [PHI_lines_10, fieldline_file(i).PHI_lines(:,2)];
 end
 PHI_lines_10 = reshape(PHI_lines_10, 40000,5);
 % Z_lines
 Z_lines_10 = [];
 for i = 1:length(fieldline_file)
-    Z_lines_10 = [Z_lines_10 fieldline_file(i).Z_lines(:,2)];
+    Z_lines_10 = [Z_lines_10, fieldline_file(i).Z_lines(:,2)];
 end
 Z_lines_10 = reshape(Z_lines_10, 40000,5);
 
@@ -65,42 +65,50 @@ for i = 1:size(PHI_lines_10,2)
 end
 
 %% Error Analysis %%
-% relative error for R
-relative_error_R = abs((R_lines_10 - calculated_coordinates.R)./R_lines_10);
-max_error_R.relative = max(max(relative_error_R));
-[max_error_R.relative_indicies(1), max_error_R.relative_indicies(2)] = ...
-    find(relative_error_R == max_error_R.relative);
-rel_error_arr_R = [linspace(0,2*pi,size(R_lines_10,1))', relative_error_R];
-rel_error_arr_R = sortrows(rel_error_arr_R,1);
-
-%{
-figure
-hold on
-plot(rel_error_arr_R(:,1),rel_error_arr_R(:,2),'.','Color','red')
-plot(rel_error_arr_R(:,1),rel_error_arr_R(:,3),'.','Color','red')
-plot(rel_error_arr_R(:,1),rel_error_arr_R(:,4),'.','Color','red')
-plot(rel_error_arr_R(:,1),rel_error_arr_R(:,5),'.','Color','red')
-plot(rel_error_arr_R(:,1),rel_error_arr_R(:,6),'.','Color','red')
-xlabel('Theta');
-ylabel('Relative Error');
-title('Relative Error for R v Theta')
-xlim([0,2*pi]);
-%}
-
 % absolute error for R
-for i = 1:size(THETA_lines_10,2)
-    for j = 1:size(THETA_lines_10,1)
-absolute_error_R = (R_lines_10 - calculated_coordinates.R);
-
-
+error_R = R_lines_10 - calculated_coordinates.R;
+absolute_error_R = abs(R_lines_10 - calculated_coordinates.R);
 max_error_R.absolute = max(max(absolute_error_R));
+min_error_R.absolute = min(min(absolute_error_R));
 [max_error_R.absolute_indicies(1), max_error_R.absolute_indicies(2)] = ...
     find(absolute_error_R == max_error_R.absolute);
+
+%{
+angle_a = 5*pi/12;
+angle_b = 19*pi/12
+% points of the exterior of the surface
+R_lines_10_out = [];
+calculated_coordinates.R_out = [];
+for j = 1:size(THETA_lines_10,2)
+    for i = 1:size(THETA_lines_10,1)
+        if THETA_lines_10(i,j) <= angle_a || THETA_lines_10(i,j) > angle_b
+            R_lines_10_out = [R_lines_10_out, R_lines_10(i,j)];
+            calculated_coordinates.R_out = [calculated_coordinates.R_out, calculated_coordinates.R(i,j)];
+        end
+    end
+end
+absolute_error_R = (R_lines_10_out - calculated_coordinates.R_out);
+
+
+% points of the interior of the surface
+R_lines_10_in = [];
+calculated_coordinates.R_in = [];
+for j = 1:size(THETA_lines_10,2)
+    for i = 1:size(THETA_lines_10,1)
+        if THETA_lines_10(i,j) > angle_a && THETA_lines_10(i,j) <= angle_b
+            R_lines_10_in = [R_lines_10_in, R_lines_10(i,j)];
+            calculated_coordinates.R_in = [calculated_coordinates.R_in, calculated_coordinates.R(i,j)];
+        end
+    end
+end
+absolute_error_R = (R_lines_10_in - calculated_coordinates.R_in);
+
+
 R_true_error.mean_error = sum(absolute_error_R,'all')/numel(absolute_error_R);
 R_true_error.std_dev = sqrt(sum((absolute_error_R-R_true_error.mean_error).^2,'all')/numel(absolute_error_R));
 
 figure
-histogram(absolute_error_R,100000)
+histogram(absolute_error_R,10000)
 hold on
 xline(R_true_error.mean_error, '--', 'Mean','Color','r')
 xline(R_true_error.mean_error + R_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -109,61 +117,48 @@ xline(R_true_error.mean_error + 2*R_true_error.std_dev, '--', '+2 Standard Devia
 xline(R_true_error.mean_error - 2*R_true_error.std_dev, '--', '-2 Standard Deviation','Color','b')
 xline(R_true_error.mean_error + 3*R_true_error.std_dev, '-.', '+3 Standard Deviation','Color','b')
 xline(R_true_error.mean_error - 3*R_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
-xlim([-max_error_R.absolute,max_error_R.absolute])
+xlim([min_error_R.absolute,max_error_R.absolute])
 xlabel('True Error for R')
-
-%{
-abs_error_arr_R = [linspace(0,2*pi,size(R_lines_10,1))', absolute_error_R];
-abs_error_arr_R = sortrows(abs_error_arr_R,1);
-figure
-hold on
-plot(abs_error_arr_R(:,1),abs_error_arr_R(:,2),'.','Color','red')
-plot(abs_error_arr_R(:,1),abs_error_arr_R(:,3),'.','Color','red')
-plot(abs_error_arr_R(:,1),abs_error_arr_R(:,4),'.','Color','red')
-plot(abs_error_arr_R(:,1),abs_error_arr_R(:,5),'.','Color','red')
-plot(abs_error_arr_R(:,1),abs_error_arr_R(:,6),'.','Color','red')
-xlabel('Theta');
-ylabel('Absolute Error');
-title('Absolute Error for R v Theta')
-xlim([0,2*pi]);
 %}
 
-% relative error for Z
-relative_error_Z = abs((Z_lines_10 - calculated_coordinates.Z)./Z_lines_10);
-max_error_Z.relative = max(max(abs(relative_error_Z)));
-[max_error_Z.relative_indicies(1), max_error_Z.relative_indicies(2)] = ...
-    find(relative_error_Z == max_error_Z.relative);
-rel_error_arr_Z = [linspace(0,2*pi,size(Z_lines_10,1))', relative_error_Z];
-rel_error_arr_Z = sortrows(rel_error_arr_Z,1);
-
-
-%{
 figure
 hold on
-plot(rel_error_arr_Z(:,1),rel_error_arr_Z(:,2),'.','Color','red')
-plot(rel_error_arr_Z(:,1),rel_error_arr_Z(:,3),'.','Color','red')
-plot(rel_error_arr_Z(:,1),rel_error_arr_Z(:,4),'.','Color','red')
-plot(rel_error_arr_Z(:,1),rel_error_arr_Z(:,5),'.','Color','red')
-plot(rel_error_arr_Z(:,1),rel_error_arr_Z(:,6),'.','Color','red')
+plot(THETA_lines_10,absolute_error_R,'.','Color','red')
+xlabel('Theta');
+ylabel('Error');
+title('Error for R v Theta')
+xlim([0,2*pi]);
+
+
+% relative error for R
+%{
+relative_error_R = abs((R_lines_10 - calculated_coordinates.R)./R_lines_10);
+max_error_R.relative = max(max(relative_error_R));
+[max_error_R.relative_indicies(1), max_error_R.relative_indicies(2)] = ...
+    find(relative_error_R == max_error_R.relative);
+rel_error_arr_R = [linspace(0,2*pi,size(R_lines_10,1))', relative_error_R];
+rel_error_arr_R = sortrows(rel_error_arr_R,1);
+
+figure
+hold on
+plot(THETA_lines_10,relative_error_R,'.','Color','red')
 xlabel('Theta');
 ylabel('Relative Error');
-title('Relative Error for Z v Theta')
+title('Relative Error for R v Theta')
 xlim([0,2*pi]);
 %}
 
-%{
 % absolute error for Z
 absolute_error_Z = (Z_lines_10 - calculated_coordinates.Z);
 max_error_Z.absolute = max(max(abs(absolute_error_Z)));
 [max_error_Z.absolute_indicies(1), max_error_Z.absolute_indicies(2)] = ...
     find(absolute_error_Z == -max_error_Z.absolute);
-abs_error_arr_Z = [linspace(0,2*pi,size(Z_lines_10,1))', absolute_error_Z];
-abs_error_arr_Z = sortrows(abs_error_arr_Z,1);
 Z_true_error.mean_error = sum(absolute_error_Z,'all')/numel(absolute_error_Z);
 Z_true_error.std_dev = sqrt(sum((absolute_error_Z-Z_true_error.mean_error).^2,'all')/numel(absolute_error_R));
 
+%{
 figure
-histogram(absolute_error_Z,100000)
+histogram(absolute_error_Z,10000)
 hold on
 xline(Z_true_error.mean_error, '--', 'Mean','Color','r')
 xline(Z_true_error.mean_error + Z_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -176,16 +171,28 @@ xlim([-max_error_Z.absolute,max_error_Z.absolute])
 xlabel('True Error for Z')
 %}
 
-%{
+
 figure
 hold on
-plot(abs_error_arr_Z(:,1),abs_error_arr_Z(:,2),'.','Color','red')
-plot(abs_error_arr_Z(:,1),abs_error_arr_Z(:,3),'.','Color','red')
-plot(abs_error_arr_Z(:,1),abs_error_arr_Z(:,4),'.','Color','red')
-plot(abs_error_arr_Z(:,1),abs_error_arr_Z(:,5),'.','Color','red')
-plot(abs_error_arr_Z(:,1),abs_error_arr_Z(:,6),'.','Color','red')
+plot(THETA_lines_10,absolute_error_Z,'.','Color','red')
 xlabel('Theta');
-ylabel('Absolute Error');
-title('Absolute Error for Z v Theta')
+ylabel('Error');
+title('Error for Z v Theta')
+xlim([0,2*pi]);
+
+
+% relative error for Z
+%{
+relative_error_Z = abs((Z_lines_10 - calculated_coordinates.Z)./Z_lines_10);
+max_error_Z.relative = max(max(abs(relative_error_Z)));
+[max_error_Z.relative_indicies(1), max_error_Z.relative_indicies(2)] = ...
+    find(relative_error_Z == max_error_Z.relative);
+
+figure
+hold on
+plot(THETA_lines_10,relative_error_Z,'.','Color','red')
+xlabel('Theta');
+ylabel('Relative Error');
+title('Relative Error for Z v Theta')
 xlim([0,2*pi]);
 %}
