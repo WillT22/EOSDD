@@ -1,5 +1,5 @@
 %{
-function variance = variability(hitpoint_data, Theta_data, vessel_file, rand_stream, option)
+function variance = variability(hitpoint_data, Theta_data, vessel_data, rand_stream, option)
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
@@ -7,7 +7,7 @@ function variance = variability(hitpoint_data, Theta_data, vessel_file, rand_str
                      fieldline_forward_run2, fieldline_reverse_run2,...];
     %}
   % Theta_data is data collected from least_squares function (see theta_coordinate.py)
-  % vessel_file is created by the function toroidal_mesh from a nescin file
+  % vessel_data is created by the function toroidal_mesh from a nescin file
     % needed for triangular area calculation function located in the function
   % rand_stream is optional and if no stream is given, function is uniquely randomized every time
   % option allows for calculations to be unique to statistical needs
@@ -28,7 +28,8 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar5_r_10];
 hitpoint_data = fieldline_file;
 data.THETA_coords = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
-vessel_file = pcs_10;
+vessel_data = pcs_10;
+% correct stream for function mode
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 option = 0;
@@ -76,7 +77,7 @@ for f = 1:size(data.PHI_assign,2)
 end
 
 %%% Assigning to a Triangle
-data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data.HYPO_assign;
+data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign).* 2 - data.HYPO_assign;
 
 %%%% Finding Variance for Hitpoints %%%%
 % setting up universal variables
@@ -89,7 +90,8 @@ data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data
     % finding ratio of hit points per triangular section
     data.hp_trig_ratio = data.nhp_trig ./ ndata_points;
     % finding hitpoints/unit area/total number of hit points
-    
+        % ratio of hit points per triangular section per meter^2
+    data.hp_trig_area = data.nhp_trig ./ vessel_data.Areas ./ ndata_points;
 
 %% Finding Hit Points/Unit Area/Total Number of Hit Points
 if option == 0

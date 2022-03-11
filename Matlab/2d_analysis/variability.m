@@ -32,7 +32,7 @@ vessel_data = pcs_10;
 % correct stream for function mode
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
-option = 0;
+option = 3;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -77,7 +77,7 @@ for f = 1:size(data.PHI_assign,2)
 end
 
 %%% Assigning to a Triangle
-data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign) .* 2 - data.HYPO_assign;
+data.TRIG_assign = ((data.PHI_assign-1) * t_div + data.THETA_assign).* 2 - data.HYPO_assign;
 
 %%%% Finding Variance for Hitpoints %%%%
 % setting up universal variables
