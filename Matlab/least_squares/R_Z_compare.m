@@ -15,6 +15,7 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
     fldlns_Cbar4_f_10, fldlns_Cbar4_r_10, fldlns_Cbar5_f_10,...
     fldlns_Cbar5_r_10];
+
 % R_lines
 R_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -27,6 +28,14 @@ for i = 1:length(fieldline_file)
     PHI_lines_10 = [PHI_lines_10, fieldline_file(i).PHI_lines(:,2)];
 end
 PHI_lines_10 = reshape(PHI_lines_10, 40000,5);
+% verifying all Phi data is in the bounds [0,2pi]
+for f = 1:size(PHI_lines_10,2)
+    for i = 1:size(PHI_lines_10,1)
+        if PHI_lines_10(i,f) < 0
+			PHI_lines_10(i,f) = PHI_lines_10(i,f) + 2*pi;
+        end
+    end
+end
 % Z_lines
 Z_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -65,50 +74,65 @@ for i = 1:size(PHI_lines_10,2)
 end
 
 %% Error Analysis %%
-% absolute error for R
-error_R = R_lines_10 - calculated_coordinates.R;
-absolute_error_R = abs(error_R);
-max_error_R.true = max(max(error_R));
-min_error_R.true = min(min(error_R));
+% Error for R
+error_R.total = R_lines_10 - calculated_coordinates.R;
+absolute_error_R = abs(error_R.total);
+max_error_R.true = max(max(error_R.total));
+min_error_R.true = min(min(error_R.total));
 [max_error_R.absolute_indicies(1), max_error_R.absolute_indicies(2)] = ...
-    find(absolute_error_R == max_error_R.absolute);
+    find(error_R.total == max_error_R.true);
+R_true_error.mean_error = sum(error_R.total,'all')/numel(error_R.total);
+R_true_error.std_dev = sqrt(sum((error_R.total-R_true_error.mean_error).^2,'all')/numel(error_R.total));
 
 %{
-angle_a = 5*pi/12;
-angle_b = 19*pi/12
-% points of the exterior of the surface
-R_lines_10_out = [];
-calculated_coordinates.R_out = [];
+% separating theta into upper and lower sections
+R_lines_10_upper = [];
+PHI_lines_10_upper = [];
+calculated_coordinates.R_upper = [];
+R_lines_10_lower = [];
+calculated_coordinates.R_lower = [];
+PHI_lines_10_lower = [];
 for j = 1:size(THETA_lines_10,2)
     for i = 1:size(THETA_lines_10,1)
-        if THETA_lines_10(i,j) <= angle_a || THETA_lines_10(i,j) > angle_b
-            R_lines_10_out = [R_lines_10_out, R_lines_10(i,j)];
-            calculated_coordinates.R_out = [calculated_coordinates.R_out, calculated_coordinates.R(i,j)];
+        if THETA_lines_10(i,j) <= pi    % points on the upper portion
+            R_lines_10_upper = [R_lines_10_upper, R_lines_10(i,j)];
+            calculated_coordinates.R_upper = [calculated_coordinates.R_upper, calculated_coordinates.R(i,j)];
+            PHI_lines_10_upper = [PHI_lines_10_upper, PHI_lines_10(i,j)];
+        elseif THETA_lines_10(i,j) > pi % points on the lower portion
+            R_lines_10_lower = [R_lines_10_lower, R_lines_10(i,j)];
+            calculated_coordinates.R_lower = [calculated_coordinates.R_lower, calculated_coordinates.R(i,j)];
+            PHI_lines_10_lower = [PHI_lines_10_lower, PHI_lines_10(i,j)];
         end
     end
 end
-absolute_error_R = (R_lines_10_out - calculated_coordinates.R_out);
+error_R.upper = (R_lines_10_upper - calculated_coordinates.R_upper);
+error_R.lower = (R_lines_10_lower - calculated_coordinates.R_lower);
 
 
-% points of the interior of the surface
-R_lines_10_in = [];
-calculated_coordinates.R_in = [];
-for j = 1:size(THETA_lines_10,2)
-    for i = 1:size(THETA_lines_10,1)
-        if THETA_lines_10(i,j) > angle_a && THETA_lines_10(i,j) <= angle_b
-            R_lines_10_in = [R_lines_10_in, R_lines_10(i,j)];
-            calculated_coordinates.R_in = [calculated_coordinates.R_in, calculated_coordinates.R(i,j)];
+% separating vessel into three symmetric parts
+angle_a = 3*pi/12;
+angle_b = 5*pi/12;
+angle_c = 2*pi;
+error_R.a = [];
+error_R.b = [];
+error_R.c = [];
+PHI_data = PHI_lines_10;
+error_R_data = error_R.total;
+for j = 1:size(PHI_data,2)
+    for i = 1:size(PHI_data,1)
+        if PHI_data(i,j) <= angle_a
+            error_R.a = [error_R.a, error_R_data(i,j)];
+        elseif PHI_data(i,j) > angle_a && PHI_data(i,j) <= angle_b
+            error_R.b = [error_R.b, error_R_data(i,j)];
+        elseif PHI_data(i,j) > angle_b && PHI_data(i,j) <= angle_c
+            error_R.c = [error_R.c, error_R_data(i,j)];
         end
     end
 end
-absolute_error_R = (R_lines_10_in - calculated_coordinates.R_in);
 %}
-
-R_true_error.mean_error = sum(error_R,'all')/numel(error_R);
-R_true_error.std_dev = sqrt(sum((error_R-R_true_error.mean_error).^2,'all')/numel(error_R));
-    
+%{
 figure
-histogram(error_R,10000)
+histogram(error_R.b,10000,'Normalization','probability')
 hold on
 xline(R_true_error.mean_error, '--', 'Mean','Color','r')
 xline(R_true_error.mean_error + R_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -119,11 +143,11 @@ xline(R_true_error.mean_error + 3*R_true_error.std_dev, '-.', '+3 Standard Devia
 xline(R_true_error.mean_error - 3*R_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
 xlim([min_error_R.true,max_error_R.true])
 xlabel('Error for R')
-ylabels = linspace(0,100,11);
-set(gca,'YTickLabel',ylabels);
+ylim([0,7*10^-3])
+%}
 
 %{
-% plotting absolute error
+% plotting absolute error of R
 figure
 hold on
 plot(THETA_lines_10,absolute_error_R,'.','Color','red')
@@ -132,6 +156,17 @@ ylabel('Absolute Error');
 title('Absolute Error for R v Theta')
 xlim([0,2*pi]);
 %}
+figure
+hold on
+plot(PHI_lines_10,error_R.total,'.','Color','red')
+xlabel('Phi');
+ylabel('Error');
+title('Error for R v Phi')
+xlim([0,2*pi]);
+xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])
+xticklabels({'0', '\pi/4', '\pi/2', '3\pi/4', '\pi', '5\pi/4', '3\pi/2', '7\pi/4', '2\pi'})
+xline(11*pi/24);
+xline(21*pi/24);
 
 % relative error for R
 %{
@@ -151,19 +186,19 @@ title('Relative Error for R v Theta')
 xlim([0,2*pi]);
 %}
 
-% absolute error for Z
-error_Z = Z_lines_10 - calculated_coordinates.Z;
-absolute_error_Z = abs(error_Z);
-max_error_Z.true = max(max(error_Z));
-min_error_Z.true = min(min(error_Z));
+% Error for Z
+error_Z.total = Z_lines_10 - calculated_coordinates.Z;
+absolute_error_Z = abs(error_Z.total);
+max_error_Z.true = max(max(error_Z.total));
+min_error_Z.true = min(min(error_Z.total));
 [max_error_Z.absolute_indicies(1), max_error_Z.absolute_indicies(2)] = ...
-    find(absolute_error_Z == max_error_Z.absolute);
-Z_true_error.mean_error = sum(error_Z,'all')/numel(error_Z);
-Z_true_error.std_dev = sqrt(sum((error_Z-Z_true_error.mean_error).^2,'all')/numel(error_R));
+    find(error_Z.total == max_error_Z.true);
+Z_true_error.mean_error = sum(error_Z.total,'all')/numel(error_Z.total);
+Z_true_error.std_dev = sqrt(sum((error_Z.total-Z_true_error.mean_error).^2,'all')/numel(error_Z.total));
 
-
+%{
 figure
-histogram(error_Z,10000)
+histogram(error_Z.total,10000)
 hold on
 xline(Z_true_error.mean_error, '--', 'Mean','Color','r')
 xline(Z_true_error.mean_error + Z_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -176,7 +211,7 @@ xlim([-max_error_Z.true,max_error_Z.true])
 xlabel('Error for Z')
 ylabels = linspace(0,100,11);
 set(gca,'YTickLabel',ylabels);
-
+%}
 
 %{
 figure
@@ -187,6 +222,19 @@ ylabel('Absolute Error');
 title('Absolute Error for Z v Theta')
 xlim([0,2*pi]);
 %}
+
+figure
+hold on
+plot(PHI_lines_10,error_Z.total,'.','Color','red')
+xlabel('Phi');
+ylabel('Error');
+title('Error for Z v Phi')
+xlim([0,2*pi]);
+xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])
+xticklabels({'0', '\pi/4', '\pi/2', '3\pi/4', '\pi', '5\pi/4', '3\pi/2', '7\pi/4', '2\pi'})
+xline(11*pi/24);
+xline(21*pi/24);
+
 
 % relative error for Z
 %{

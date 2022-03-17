@@ -52,7 +52,7 @@ vessel_file = pcs_10;
 
 toroidal_graph(vessel_file);
 hold on
-
+%{
 plot3(calculated_coordinates.R(7812,2).*cos(PHI_lines_10(7812,2)),...
     calculated_coordinates.R(7812,2).*sin(PHI_lines_10(7812,2)),...
     calculated_coordinates.Z(7812,2),'.','color','red');
@@ -70,13 +70,13 @@ hold on
 plot3(calculated_coordinates.R(13744,2).*cos(PHI_lines_10(13744,2)),...
     calculated_coordinates.R(13744,2).*sin(PHI_lines_10(13744,2)),...
     calculated_coordinates.Z(13744,2),'.','color','red');
+%}
 
-%{
 for i = 1:size(fieldline_file_f,2)
 plot3(fieldline_file_f(i).X_lines(:,2), fieldline_file_f(i).Y_lines(:,2), fieldline_file_f(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
 plot3(fieldline_file_r(i).X_lines(:,2), fieldline_file_r(i).Y_lines(:,2), fieldline_file_r(i).Z_lines(:,2), 'linestyle', 'none', 'marker', '.','color','red');
 end
-%}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7/23/21 & 7/26/21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plotting Poincare cross sections with surface cross sections
 %{
