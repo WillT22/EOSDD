@@ -67,9 +67,9 @@ end
 %% Error Analysis %%
 % absolute error for R
 error_R = R_lines_10 - calculated_coordinates.R;
-absolute_error_R = abs(R_lines_10 - calculated_coordinates.R);
-max_error_R.absolute = max(max(absolute_error_R));
-min_error_R.absolute = min(min(absolute_error_R));
+absolute_error_R = abs(error_R);
+max_error_R.true = max(max(error_R));
+min_error_R.true = min(min(error_R));
 [max_error_R.absolute_indicies(1), max_error_R.absolute_indicies(2)] = ...
     find(absolute_error_R == max_error_R.absolute);
 
@@ -102,13 +102,13 @@ for j = 1:size(THETA_lines_10,2)
     end
 end
 absolute_error_R = (R_lines_10_in - calculated_coordinates.R_in);
+%}
 
-
-R_true_error.mean_error = sum(absolute_error_R,'all')/numel(absolute_error_R);
-R_true_error.std_dev = sqrt(sum((absolute_error_R-R_true_error.mean_error).^2,'all')/numel(absolute_error_R));
-
+R_true_error.mean_error = sum(error_R,'all')/numel(error_R);
+R_true_error.std_dev = sqrt(sum((error_R-R_true_error.mean_error).^2,'all')/numel(error_R));
+    
 figure
-histogram(absolute_error_R,10000)
+histogram(error_R,10000)
 hold on
 xline(R_true_error.mean_error, '--', 'Mean','Color','r')
 xline(R_true_error.mean_error + R_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -117,18 +117,21 @@ xline(R_true_error.mean_error + 2*R_true_error.std_dev, '--', '+2 Standard Devia
 xline(R_true_error.mean_error - 2*R_true_error.std_dev, '--', '-2 Standard Deviation','Color','b')
 xline(R_true_error.mean_error + 3*R_true_error.std_dev, '-.', '+3 Standard Deviation','Color','b')
 xline(R_true_error.mean_error - 3*R_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
-xlim([min_error_R.absolute,max_error_R.absolute])
-xlabel('True Error for R')
-%}
+xlim([min_error_R.true,max_error_R.true])
+xlabel('Error for R')
+ylabels = linspace(0,100,11);
+set(gca,'YTickLabel',ylabels);
 
+%{
+% plotting absolute error
 figure
 hold on
 plot(THETA_lines_10,absolute_error_R,'.','Color','red')
 xlabel('Theta');
-ylabel('Error');
-title('Error for R v Theta')
+ylabel('Absolute Error');
+title('Absolute Error for R v Theta')
 xlim([0,2*pi]);
-
+%}
 
 % relative error for R
 %{
@@ -149,16 +152,18 @@ xlim([0,2*pi]);
 %}
 
 % absolute error for Z
-absolute_error_Z = (Z_lines_10 - calculated_coordinates.Z);
-max_error_Z.absolute = max(max(abs(absolute_error_Z)));
+error_Z = Z_lines_10 - calculated_coordinates.Z;
+absolute_error_Z = abs(error_Z);
+max_error_Z.true = max(max(error_Z));
+min_error_Z.true = min(min(error_Z));
 [max_error_Z.absolute_indicies(1), max_error_Z.absolute_indicies(2)] = ...
-    find(absolute_error_Z == -max_error_Z.absolute);
-Z_true_error.mean_error = sum(absolute_error_Z,'all')/numel(absolute_error_Z);
-Z_true_error.std_dev = sqrt(sum((absolute_error_Z-Z_true_error.mean_error).^2,'all')/numel(absolute_error_R));
+    find(absolute_error_Z == max_error_Z.absolute);
+Z_true_error.mean_error = sum(error_Z,'all')/numel(error_Z);
+Z_true_error.std_dev = sqrt(sum((error_Z-Z_true_error.mean_error).^2,'all')/numel(error_R));
 
-%{
+
 figure
-histogram(absolute_error_Z,10000)
+histogram(error_Z,10000)
 hold on
 xline(Z_true_error.mean_error, '--', 'Mean','Color','r')
 xline(Z_true_error.mean_error + Z_true_error.std_dev, '-', '+1 Standard Deviation','Color','b')
@@ -167,19 +172,20 @@ xline(Z_true_error.mean_error + 2*Z_true_error.std_dev, '--', '+2 Standard Devia
 xline(Z_true_error.mean_error - 2*Z_true_error.std_dev, '--', '-2 Standard Deviation','Color','b')
 xline(Z_true_error.mean_error + 3*Z_true_error.std_dev, '-.', '+3 Standard Deviation','Color','b')
 xline(Z_true_error.mean_error - 3*Z_true_error.std_dev, '-.', '-3 Standard Deviation','Color','b')
-xlim([-max_error_Z.absolute,max_error_Z.absolute])
-xlabel('True Error for Z')
-%}
+xlim([-max_error_Z.true,max_error_Z.true])
+xlabel('Error for Z')
 
 
+
+%{
 figure
 hold on
 plot(THETA_lines_10,absolute_error_Z,'.','Color','red')
 xlabel('Theta');
-ylabel('Error');
-title('Error for Z v Theta')
+ylabel('Absolute Error');
+title('Absolute Error for Z v Theta')
 xlim([0,2*pi]);
-
+%}
 
 % relative error for Z
 %{

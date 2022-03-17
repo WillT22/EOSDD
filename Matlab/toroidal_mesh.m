@@ -9,7 +9,7 @@ function [toroidal_vd] = toroidal_mesh(nescin_file, p, t)
           t = 90;
       case 3    
       otherwise         % else throw error
-          error('4 inputs are accepted.')
+          error('3 inputs are accepted.')
   end
 
 % read and extract relevant data from the nescin file
