@@ -1,5 +1,5 @@
 %{
-function variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
+data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
@@ -38,7 +38,8 @@ vessel_data = pcs_10;
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 nsamples = 10;
-percent_analysis = 0.001;
+%percent_analysis = 0;
+percent_analysis = 0.01/100;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -85,6 +86,7 @@ end
 %%% Assigning to a Triangle
 trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_assign_data.THETA_assign).* 2 - trig_assign_data.HYPO_assign;
 
+%% Finding Hit Points/Unit Area/Total Number of Hit Points
 %%%% Finding Variance for Hitpoints %%%%
 % setting up universal variables
     % finding total number of hit points
@@ -92,37 +94,33 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
     % set up edges for counting the number of hit points in the triangle
     index_vector = linspace(1,p_div*t_div*2+1,p_div*t_div*2+1)';
     % count the number of hit points that are in each triangle
-    trig_assign_data.nhp_trig = histcounts(trig_assign_data.TRIG_assign,index_vector)';
+    data_variance.nhp_trig = histcounts(trig_assign_data.TRIG_assign,index_vector)';
     % finding ratio of hit points per triangular section
-    trig_assign_data.hp_trig_ratio = trig_assign_data.nhp_trig ./ ndata_points;
+    data_variance.hp_trig_ratio = data_variance.nhp_trig ./ ndata_points;
     % finding hitpoints/unit area/total number of hit points
         % ratio of hit points per triangular section per meter^2
-    trig_assign_data.hp_trig_area = trig_assign_data.nhp_trig ./ vessel_data.Areas ./ ndata_points;
-
-%% Finding Hit Points/Unit Area/Total Number of Hit Points
-if percent_analysis == 0
-    %{
-    figure
-    plot_2d(data.PHI_coords, data.THETA_coords);
-    hold on
-    patch('Faces',grid.faces(20392,:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
-    alpha(0.5);
-    %}
+    data_variance.hp_trig_area = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
+    
+    
 %% Finding Variance for (nsamples) Samples of (percent_analysis)% of inputted data
-else
+if percent_analysis ~= 0
     nselection  = ceil(ndata_points * percent_analysis);
-    rand_select.index = randi(stream, ndata_points,[nselection,nsamples]);
-    rand_select.Phi   = trig_assign_data.PHI_coords(rand_select.index); 
-    rand_select.Theta = trig_assign_data.THETA_coords(rand_select.index);
+    rand_select_index = randi(stream, ndata_points,[nselection,nsamples]);
+    data_variance.sample_Phi   = trig_assign_data.PHI_coords(rand_select_index); 
+    data_variance.sample_Theta = trig_assign_data.THETA_coords(rand_select_index);
+    data_variance.sample_trig  = trig_assign_data.TRIG_assign(rand_select_index);
+  
     % Finding Variance for Samples %
     
+    
+    
     %{
-    % grid is pulled from toroidal_graph function 
-    faces = grid.faces(trig_assign_data.TRIG_assign(rand_select.index),:);
+    % grid is pulled from toroidal_grid code
+    faces = grid.faces(trig_assign_data.TRIG_assign(rand_select.index(:,1)),:);
     figure
-    plot_2d(rand_select.Phi, rand_select.Theta);
+    plot_2d(rand_select.Phi(:,1), rand_select.Theta(:,1));
     hold on
-    patch('Faces',grid.faces(trig_assign_data.TRIG_assign(rand_select.index),:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
+    patch('Faces',grid.faces(trig_assign_data.TRIG_assign(rand_select.index(:,1)),:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
     alpha(0.5);
     %}
 end

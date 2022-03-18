@@ -11,7 +11,7 @@ function toroidal_graph(toroidal_coordinates, option)
   end
  
 %%%%%%%%%%%%%%%%%%%% Graphing Options %%%%%%%%%%%%%%%%%%%%%%%
-%figure
+figure
 g_option = option;
 nfacetot = size(toroidal_coordinates.Faces,1);               % finds the number of faces that will be used by using the size of the first column of faces
 
@@ -25,8 +25,8 @@ elseif g_option == 1
     %alpha(0);
 elseif g_option == 2
     % Option 2: to see the from set angles of the torus
-    phi_a = 0*pi/24;
-    phi_b = 5*pi/24;
+    phi_a = 11*pi/24;
+    phi_b = 21*pi/24;
     start = floor(nfacetot*(phi_a/(2*pi)))+1;
     finish = ceil(nfacetot*(phi_b/(2*pi)));
     patch('Faces',toroidal_coordinates.Faces(start:finish,:),'Vertices',toroidal_coordinates.Vertices, 'EdgeColor', [0, 0.4470, 0.7410], 'FaceColor', [0, 0.4470, 0.7410]);
