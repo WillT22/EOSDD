@@ -3,7 +3,7 @@ data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_anal
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
-    fieldline_file = [fieldline_forward_run1, fieldline_reverse_run1,...
+    hitpoint_data = [fieldline_forward_run1, fieldline_reverse_run1,...
                      fieldline_forward_run2, fieldline_reverse_run2,...];
     %}
   % Theta_data is data collected from least_squares function (see theta_coordinate.py)
@@ -32,14 +32,16 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar4_f_10, fldlns_Cbar4_r_10, fldlns_Cbar5_f_10,...
     fldlns_Cbar5_r_10];
 hitpoint_data = fieldline_file;
-trig_assign_data.THETA_coords = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
+Theta_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 vessel_data = pcs_10;
 % correct stream for function mode
 stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 nsamples = 10;
-%percent_analysis = 0;
-percent_analysis = 1/100;
+percent_analysis = 1;
+percent_analysis = percent_analysis/100;
+
+trig_assign_data.THETA_coords = Theta_data;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -98,8 +100,9 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
     % finding ratio of hit points per triangular section
     data_variance.hp_ratio = data_variance.nhp_trig ./ ndata_points;
     % finding hitpoints/unit area/total number of hit points
+        % heat flux density
         % ratio of hit points per triangular section per meter^2
-    data_variance.hp_area = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
+    data_variance.hf_density = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
     
     
 %% Finding Variance for (nsamples) Samples of (percent_analysis)% of inputted data
@@ -114,18 +117,20 @@ elseif percent_analysis ~= 0
   
     % Finding Variance for Samples %
     % count the number of hit points that are in each triangle
-    data_variance.sample_nhp_trig = histcounts(trig_assign_data.TRIG_assign(rand_select_index),index_vector)';
+    for i = 1:nsamples
+        data_variance.sample_nhp_trig(:,i) = histcounts(data_variance.sample_trig(:,i),index_vector)';
+    end
     % finding ratio of hit points per triangular section
-    data_variance.sample_hp_ratio = data_variance.sample_nhp_trig ./ ndata_points;
+    data_variance.sample_hp_ratio = data_variance.sample_nhp_trig ./ nselection;
     % finding hitpoints/unit area/total number of hit points
+        % heat flux density
         % ratio of hit points per triangular section per meter^2
-    data_variance.sample_hp_area = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ ndata_points;
-   
-    
-    % grid is pulled from toroidal_grid code
-    faces = grid.faces(data_variance.sample_trig(:,1),:);
-    plot_2d(data_variance.sample_Phi(:,1), data_variance.sample_Theta(:,1),0,data_variance);
-    
+    data_variance.sample_hf_density = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ nselection;
+    % true error between sample and data heat flux density
+    for i = 1:nsamples
+        data_variance.sample_variance(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
+    end
+    data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
     
 end
 %end %end of function
