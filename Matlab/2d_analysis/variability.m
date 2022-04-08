@@ -39,7 +39,7 @@ stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 nsamples = 10;
 %percent_analysis = 0;
-percent_analysis = 0.01/100;
+percent_analysis = 1/100;
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -103,7 +103,9 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
     
     
 %% Finding Variance for (nsamples) Samples of (percent_analysis)% of inputted data
-if percent_analysis ~= 0
+if percent_analysis == 0
+    data_variance.sample_nhp_trig = data_variance.nhp_trig;
+elseif percent_analysis ~= 0
     nselection  = ceil(ndata_points * percent_analysis);
     rand_select_index = randi(stream, ndata_points,[nselection,nsamples]);
     data_variance.sample_Phi   = trig_assign_data.PHI_coords(rand_select_index); 
@@ -112,22 +114,18 @@ if percent_analysis ~= 0
   
     % Finding Variance for Samples %
     % count the number of hit points that are in each triangle
-    data_variance.sample_nhp_trig = histcounts(trig_assign_data.TRIG_assign,index_vector)';
+    data_variance.sample_nhp_trig = histcounts(trig_assign_data.TRIG_assign(rand_select_index),index_vector)';
     % finding ratio of hit points per triangular section
-    data_variance.sample_hp_ratio = data_variance.nhp_trig ./ ndata_points;
+    data_variance.sample_hp_ratio = data_variance.sample_nhp_trig ./ ndata_points;
     % finding hitpoints/unit area/total number of hit points
         % ratio of hit points per triangular section per meter^2
-    data_variance.sample_hp_area = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
-    
+    data_variance.sample_hp_area = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ ndata_points;
    
-    %{
+    
     % grid is pulled from toroidal_grid code
-    faces = grid.faces(trig_assign_data.TRIG_assign(rand_select.index(:,1)),:);
-    figure
-    plot_2d(rand_select.Phi(:,1), rand_select.Theta(:,1));
-    hold on
-    patch('Faces',grid.faces(trig_assign_data.TRIG_assign(rand_select.index(:,1)),:),'Vertices',grid.vertices,'EdgeColor', 'b', 'FaceColor', 'b')
-    alpha(0.5);
-    %}
+    faces = grid.faces(data_variance.sample_trig(:,1),:);
+    plot_2d(data_variance.sample_Phi(:,1), data_variance.sample_Theta(:,1),0,data_variance);
+    
+    
 end
 %end %end of function

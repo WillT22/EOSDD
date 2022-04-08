@@ -3,8 +3,10 @@ function plot_2d(Phi_lines, Theta_lines, option, data_variance)
 %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
       case 2 
-          option = 0
-          trig_assing_data = [];
+          option = 0;
+          data_variance = [];
+      case 1
+          data_variance = [];
       case 0         % else throw error
           error('Phi and Theta are required.')
   end
@@ -38,7 +40,6 @@ grid.faces = reshape([faces.lower(:) faces.upper(:)]', [], 3); % combines upper 
 
 %% Plotting the Figure %%
 figure;
-
 % plotting the vessel on a 2D grid of Theta vs. Phi
 
 % plotting only the vertices
@@ -50,7 +51,7 @@ if option == 0
     hold on
     plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 elseif option == 1
-    faces_cdata = data_variance.nhp_trig;
+    faces_cdata = data_variance.sample_nhp_trig;
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
 end
 
