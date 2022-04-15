@@ -1,5 +1,4 @@
-%{
-data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
+function data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
@@ -18,16 +17,14 @@ data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_anal
       case 3            % if two inputs are empty, use these default parameters
           nsamples = 0;      
           percent_analysis = 0;
-          stream = RandStream('mt19937');
-          stream = stream.stream;
+          stream = RandStream('mt19937ar');
       case 5            % if one input is empty, use random stream
-          stream = RandStream('mt19937');
-          stream = stream.stream;
+          stream = RandStream('mt19937ar');
       otherwise         % else throw error
           error('2 inputs are accepted.')
   end
-%}
-fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
+%{
+hitpoint_data = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
     fldlns_Cbar4_f_10, fldlns_Cbar4_r_10, fldlns_Cbar5_f_10,...
     fldlns_Cbar5_r_10];
@@ -39,9 +36,10 @@ stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
 stream = stream.stream;
 nsamples = 10;
 percent_analysis = 1;
+%}
 percent_analysis = percent_analysis/100;
-
 trig_assign_data.THETA_coords = Theta_data;
+
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
 p_div=180;
@@ -53,8 +51,8 @@ theta = linspace(0,2*pi,t_div+1);   % partition as measured in the poloidal dire
 %%% PHI
 % extracting Phi data and reshaping
 trig_assign_data.PHI_coords = [];
-for i = 1:length(fieldline_file)
-    trig_assign_data.PHI_coords = [trig_assign_data.PHI_coords fieldline_file(i).PHI_lines(:,2)];
+for i = 1:length(hitpoint_data)
+    trig_assign_data.PHI_coords = [trig_assign_data.PHI_coords hitpoint_data(i).PHI_lines(:,2)];
 end
 trig_assign_data.PHI_coords = reshape(trig_assign_data.PHI_coords, 2*size(trig_assign_data.PHI_coords,1),0.5*size(trig_assign_data.PHI_coords,2));
 % verifying all Phi data is in the bounds [0,2pi]
@@ -133,4 +131,4 @@ elseif percent_analysis ~= 0
     data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
     
 end
-%end %end of function
+end %end of function

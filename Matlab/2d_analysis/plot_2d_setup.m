@@ -40,4 +40,4 @@ THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 plot_2d(PHI_lines_10, THETA_lines_10)
 
 %% Plotting a Color Mapping of Heat Flux on the Surface
-%plot_2d(PHI_lines_10, THETA_lines_10,1,data_variance)
+plot_2d(PHI_lines_10, THETA_lines_10, 1, data_variance, 2)

@@ -1,12 +1,16 @@
-function plot_2d(Phi_lines, Theta_lines, option, data_variance)
+function plot_2d(Phi_lines, Theta_lines, option, data_variance, sample_number)
 
 %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
       case 2 
           option = 0;
           data_variance = [];
-      case 1
+          sample_number = 0;
+      case 3
           data_variance = [];
+          sample_number = 0;
+      case 4
+          sample_number = 1;
       case 0         % else throw error
           error('Phi and Theta are required.')
   end
@@ -51,7 +55,7 @@ if option == 0
     hold on
     plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
 elseif option == 1
-    faces_cdata = data_variance.sample_nhp_trig;
+    faces_cdata = data_variance.sample_nhp_trig(:,sample_number);
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
 end
 
