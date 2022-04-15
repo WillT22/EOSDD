@@ -24,21 +24,17 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
 ls_trig_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 % creating vessel facet data
 pcs_10 = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10');
-% stating what percent of data to be analyzed 
-    %(optional if only wanting total data analysis)
-percent = 10;
-% stating desired number of samples
-    %(optional if only wanting total data analysis)
-samples = 10;
-% stating desired radomization stream (optional)
-stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
-stream = stream.stream;
 % running data heat flux density analysis
-data_variance_original = variability(fieldline_file,ls_trig_data,pcs_10);;
-data_variance_test = variability(fieldline_file,ls_trig_data,pcs_10,percent,samples);
+dv_original = variability(fieldline_file,ls_trig_data,pcs_10);
 
-%{
+dv_10p    = variability(fieldline_file,ls_trig_data,pcs_10,10,10);%,RandStream('mt19937ar','Seed',856));
+dv_1p     = variability(fieldline_file,ls_trig_data,pcs_10,1,100);%,RandStream('mt19937ar','Seed',310));
+dv_halfp  = variability(fieldline_file,ls_trig_data,pcs_10,0.5,200);%,RandStream('mt19937ar','Seed',493));
+dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,500);%,RandStream('mt19937ar','Seed',794));
+dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000);%,RandStream('mt19937ar','Seed',51));
+
 %% Color Mapping Heat Flux Data %%
+%{
 % PHI Lines
 PHI_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -56,8 +52,17 @@ end
 THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 
 % plotting color mapping of total heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,data_variance_original)
+plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
 
 % plotting color mapping of sample heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,data_variance_test,2)
+plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
 %}
+
+%% Plotting Variance
+figure
+hold on
+plot(linspace(1:length(dv_original.nhp_tri,absolute_error_R,'.','Color','red')
+xlabel('Theta');
+ylabel('Absolute Error');
+title('Absolute Error for R v Theta')
+xlim([0,2*pi]);

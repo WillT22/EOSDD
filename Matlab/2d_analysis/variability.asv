@@ -17,28 +17,16 @@ function data_variance = variability(hitpoint_data, Theta_data, vessel_data, per
       case 3            % if two inputs are empty, use these default parameters
           nsamples = 0;      
           percent_analysis = 0;
-          stream = RandStream('mt19937ar');
+          stream = RandStream.create('mt19937ar');
       case 5            % if one input is empty, use random stream
-          stream = RandStream('mt19937ar');
+          stream = RandStream.create('mt19937ar');
+      case 6
       otherwise         % else throw error
           error('2 inputs are accepted.')
   end
-%{
-hitpoint_data = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
-    fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
-    fldlns_Cbar4_f_10, fldlns_Cbar4_r_10, fldlns_Cbar5_f_10,...
-    fldlns_Cbar5_r_10];
-hitpoint_data = fieldline_file;
-Theta_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
-vessel_data = pcs_10;
-% correct stream for function mode
-stream = load('/u/wteague/EOSDD/Matlab/2d_analysis/variability.mat');
-stream = stream.stream;
-nsamples = 10;
-percent_analysis = 1;
-trig_assign_data.THETA_coords = Theta_data;
-%}
+
 percent_analysis = percent_analysis/100;
+trig_assign_data.THETA_coords = Theta_data;
 
 %%%%%%%%%%%%%%%%%%%% Variability Options %%%%%%%%%%%%%%%%%%%%%%%
 %% Assigning Hit Points to Triangles
@@ -108,7 +96,7 @@ if percent_analysis == 0
     data_variance.sample_nhp_trig = data_variance.nhp_trig;
 elseif percent_analysis ~= 0
     nselection  = ceil(ndata_points * percent_analysis);
-    rand_select_index = randi(stream, ndata_points,[nselection,nsamples]);
+    rand_select_index = randi(strea, ndata_points,[nselection,nsamples]);
     data_variance.sample_Phi   = trig_assign_data.PHI_coords(rand_select_index); 
     data_variance.sample_Theta = trig_assign_data.THETA_coords(rand_select_index);
     data_variance.sample_trig  = trig_assign_data.TRIG_assign(rand_select_index);
@@ -129,6 +117,7 @@ elseif percent_analysis ~= 0
         data_variance.sample_variance(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
     end
     data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
+    data_variance.avg_variance = sum(data_variance.avg_sample_variance)./length(data_variance.avg_sample_variance);
     
 end
 end %end of function
