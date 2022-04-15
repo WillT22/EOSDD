@@ -24,14 +24,19 @@ fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
 ls_trig_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 % creating vessel facet data
 pcs_10 = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10');
+% stating desired radomization stream (optional)
+seed = 128;
+
 % running data heat flux density analysis
 dv_original = variability(fieldline_file,ls_trig_data,pcs_10);
 
-dv_10p    = variability(fieldline_file,ls_trig_data,pcs_10,10,10);%,RandStream('mt19937ar','Seed',856));
-dv_1p     = variability(fieldline_file,ls_trig_data,pcs_10,1,100);%,RandStream('mt19937ar','Seed',310));
-dv_halfp  = variability(fieldline_file,ls_trig_data,pcs_10,0.5,200);%,RandStream('mt19937ar','Seed',493));
-dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,500);%,RandStream('mt19937ar','Seed',794));
-dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000);%,RandStream('mt19937ar','Seed',51));
+dv_10p    = variability(fieldline_file,ls_trig_data,pcs_10,10,1000,seed);
+dv_5p     = variability(fieldline_file,ls_trig_data,pcs_10,5,1000,seed);
+dv_2p     = variability(fieldline_file,ls_trig_data,pcs_10,2,1000,seed);
+dv_1p     = variability(fieldline_file,ls_trig_data,pcs_10,1,1000,seed);
+dv_halfp  = variability(fieldline_file,ls_trig_data,pcs_10,0.5,1000,seed);
+dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,1000,seed);
+dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000,seed);
 
 %% Color Mapping Heat Flux Data %%
 %{
@@ -68,7 +73,7 @@ ylabel('Variance');
 title('10 Percent Data Variance')
 xlim([0,length(dv_10p.nhp_trig)]);
 %}
-
+%{
 figure
 hold on
 histogram(dv_10p.sample_variance,100000)
@@ -89,3 +94,27 @@ histogram(dv_halfp.sample_variance,100000)
 xlabel('Variance');
 title('1/2 Percent Data Variance')
 ylim([0,3000]);
+%}
+
+% get sample size
+x_vari = [size(dv_10p.sample_trig,1),size(dv_5p.sample_trig,1),...
+    size(dv_2p.sample_trig,1),size(dv_1p.sample_trig,1),...
+    size(dv_halfp.sample_trig,1),size(dv_fifthp.sample_trig,1),size(dv_tenthp.sample_trig,1)];
+% get average variance across all samples
+y_mean_vari = [dv_10p.avg_variance,dv_5p.avg_variance,dv_2p.avg_variance,...
+    dv_1p.avg_variance,dv_halfp.avg_variance,dv_fifthp.avg_variance,dv_tenthp.avg_variance];
+% get standard deviation of variance across samples
+y_std_dev = [dv_10p.std_dev,dv_5p.std_dev,dv_2p.std_dev,dv_1p.std_dev,...
+    dv_halfp.std_dev,dv_fifthp.std_dev,dv_tenthp.std_dev];
+% plot
+figure
+hold on
+plot(x_vari,y_mean_vari,'.','Color','black')
+errorbar(x_vari,y_mean_vari,y_std_dev);
+set(gca, 'XScale','log')
+xlim([100,30000]);
+xlabel('Sample Size');
+xticks(sort(x_vari));
+xticklabels({'200','400','1000','2000','4000','10000','20000'})
+ylabel('Variance (Hit points/Triangle/Unit Area)');
+title('Variance v. Sample Size')

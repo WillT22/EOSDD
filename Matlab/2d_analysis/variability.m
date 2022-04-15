@@ -1,4 +1,4 @@
-function data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
+function data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_seed)
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
@@ -21,6 +21,7 @@ function data_variance = variability(hitpoint_data, Theta_data, vessel_data, per
       case 5            % if one input is empty, use random stream
           rand_stream = RandStream.create('mt19937ar','Seed',randi(10000));
       case 6
+          rand_stream = RandStream.create('mt19937ar','Seed',rand_seed);
       otherwise         % else throw error
           error('2 inputs are accepted.')
   end
@@ -116,8 +117,11 @@ elseif percent_analysis ~= 0
     for i = 1:nsamples
         data_variance.sample_variance(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
     end
+    % average variance over all samples
     data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
+    % average variance over all triangles
     data_variance.avg_variance = sum(data_variance.avg_sample_variance)./length(data_variance.avg_sample_variance);
-    
+    % standard deviation of all triangles' variance
+    data_variance.std_dev = sqrt(sum((data_variance.avg_sample_variance-data_variance.avg_variance).^2,'all')/length(data_variance.avg_sample_variance));
 end
 end %end of function
