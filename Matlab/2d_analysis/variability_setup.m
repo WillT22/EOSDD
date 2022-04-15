@@ -26,7 +26,7 @@ ls_trig_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 pcs_10 = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10');
 % stating desired radomization stream (optional)
 seed = 128;
-
+%{
 % running data heat flux density analysis
 dv_original = variability(fieldline_file,ls_trig_data,pcs_10);
 
@@ -37,7 +37,7 @@ dv_1p     = variability(fieldline_file,ls_trig_data,pcs_10,1,1000,seed);
 dv_halfp  = variability(fieldline_file,ls_trig_data,pcs_10,0.5,1000,seed);
 dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,1000,seed);
 dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000,seed);
-
+%}
 %% Color Mapping Heat Flux Data %%
 %{
 % PHI Lines
@@ -110,11 +110,11 @@ y_std_dev = [dv_10p.std_dev,dv_5p.std_dev,dv_2p.std_dev,dv_1p.std_dev,...
 figure
 hold on
 plot(x_vari,y_mean_vari,'.','Color','black')
-errorbar(x_vari,y_mean_vari,y_std_dev);
+%errorbar(x_vari,y_mean_vari,y_std_dev,'.','Color','black');
 set(gca, 'XScale','log')
 xlim([100,30000]);
-xlabel('Sample Size');
+xlabel('Sample Size (Log Scale)');
 xticks(sort(x_vari));
 xticklabels({'200','400','1000','2000','4000','10000','20000'})
-ylabel('Variance (Hit points/Triangle/Unit Area)');
+ylabel('Error (Hit points/Triangle/m^2)');
 title('Variance v. Sample Size')
