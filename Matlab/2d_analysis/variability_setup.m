@@ -147,9 +147,12 @@ for i = 1:size(samples,2)
         % divide by n-1 to find variance
         samples(i).bin_array(max(ordered(:,2))+1,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2)-1);
     end
+    var_nonzero = samples(i).bin_array(:,2);
+    var_nonzero(var_nonzero==0) = nan;
+    
     figure
     hold on
-    plot(samples(i).bin_array(:,1),samples(i).bin_array(:,2),'.','Color','red');
+    plot(samples(i).bin_array(:,1),var_nonzero,'.','Color','red');
     xlabel('Number of Hitpoints in a Triangle');
     ylabel('Variance of Heat Flux Density');
 end

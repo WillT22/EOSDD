@@ -140,10 +140,11 @@ for i = 1:size(samples,2)
         temp_sum = 0;
         for k = 1:size(r,1)
             % sum the square of the difference between the sample hfd and the total hfd
-            temp_sum = temp_sum + sum((samples(i).sample_hf_perc(ordered(r(k),1),:)-samples(i).hf_density(ordered(r(k),1))).^2);
+            temp_sum = temp_sum + sum((samples(i).sample_hf_density(ordered(r(k),1),:)-samples(i).hf_density(ordered(r(k),1))).^2);
         end
         % remove maximum nhp and corresponding index
         ordered(r,:) = [];
+        if temp_sum = 0
         % divide by n-1 to find variance
         samples(i).bin_array(max(ordered(:,2))+1,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2)-1);
     end

@@ -5,7 +5,7 @@ samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
 titles = [0.1,0.2,0.5,1,2,5,10];
 
 for i = 1:size(samples,2)
-   % temporary ordered array where maximum number will be deleted through each itteration
+    % temporary ordered array where maximum number will be deleted through each itteration
     ordered = sortrows([linspace(1,size(samples(i).nhp_trig,1),size(samples(i).nhp_trig,1))',samples(i).nhp_trig],2);
     % bin array to keep track of number of hit points and variance
     samples(i).bin_array = linspace(0,max(ordered(:,2)),max(ordered(:,2))+1)';
@@ -22,14 +22,17 @@ for i = 1:size(samples,2)
         % divide by n-1 to find variance
         samples(i).bin_array(max(ordered(:,2))+1,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2)-1);
     end
+    var_nonzero = samples(i).bin_array(:,2);
+    var_nonzero(var_nonzero==0) = nan;
+    
     fig = figure;
     hold on
-    plot(samples(i).bin_array(:,1),samples(i).bin_array(:,2),'.','Color','red');
-    xlabel('Number of Hit Points per Triangle');
+    plot(samples(i).bin_array(:,1),var_nonzero,'.','Color','red');
+    xlabel('Number of Hitpoints in a Triangle');
     ylabel('Variance of Heat Flux Density');
     title(sprintf('Variance for %2.1f Percent of Data v. Number of Hit Points',titles(i)));
-   frame = getframe(fig);
-   im{i} = frame2im(frame);
+    frame = getframe(fig);
+    im{i} = frame2im(frame);
 end
 
 clear fig;
