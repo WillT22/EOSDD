@@ -1,4 +1,4 @@
-function data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_stream)
+function data_variance = variability(hitpoint_data, Theta_data, vessel_data, percent_analysis, nsamples, rand_seed)
 
   % hitpoint_data is imported from FIELDLINES in the following format:
     %{
@@ -17,14 +17,15 @@ function data_variance = variability(hitpoint_data, Theta_data, vessel_data, per
       case 3            % if two inputs are empty, use these default parameters
           nsamples = 0;      
           percent_analysis = 0;
-          stream = RandStream.create('mt19937ar');
+          rand_stream = RandStream.create('mt19937ar','Seed',randi(10000));
       case 5            % if one input is empty, use random stream
-          stream = RandStream.create('mt19937ar');
+          rand_stream = RandStream.create('mt19937ar','Seed',randi(10000));
       case 6
+          rand_stream = RandStream.create('mt19937ar','Seed',rand_seed);
       otherwise         % else throw error
           error('2 inputs are accepted.')
   end
-
+data_variance.seed = rand_stream.Seed;
 percent_analysis = percent_analysis/100;
 trig_assign_data.THETA_coords = Theta_data;
 
@@ -89,19 +90,20 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
         % heat flux density
         % ratio of hit points per triangular section per meter^2
     data_variance.hf_density = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
+    % finding percentage of heat flux in a facet
+    data_variance.hf_ratio = data_variance.hf_density./sum(data_variance.hf_density);
     
-    
-%% Finding Variance for (nsamples) Samples of (percent_analysis)% of inputted data
+%% Finding Error and Variance for (nsamples) Samples of (percent_analysis)% of inputted data
 if percent_analysis == 0
     data_variance.sample_nhp_trig = data_variance.nhp_trig;
 elseif percent_analysis ~= 0
     nselection  = ceil(ndata_points * percent_analysis);
-    rand_select_index = randi(strea, ndata_points,[nselection,nsamples]);
+    rand_select_index = randi(rand_stream, ndata_points,[nselection,nsamples]);
     data_variance.sample_Phi   = trig_assign_data.PHI_coords(rand_select_index); 
     data_variance.sample_Theta = trig_assign_data.THETA_coords(rand_select_index);
     data_variance.sample_trig  = trig_assign_data.TRIG_assign(rand_select_index);
   
-    % Finding Variance for Samples %
+    % Finding Error and Variance for Samples %
     % count the number of hit points that are in each triangle
     for i = 1:nsamples
         data_variance.sample_nhp_trig(:,i) = histcounts(data_variance.sample_trig(:,i),index_vector)';
@@ -114,10 +116,17 @@ elseif percent_analysis ~= 0
     data_variance.sample_hf_density = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ nselection;
     % true error between sample and data heat flux density
     for i = 1:nsamples
-        data_variance.sample_variance(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
+        data_variance.sample_error(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
     end
-    data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
-    data_variance.avg_variance = sum(data_variance.avg_sample_variance)./length(data_variance.avg_sample_variance);
-    
+    % average error over all samples
+    data_variance.avg_sample_error = sum(data_variance.sample_error,2)./nsamples;
+    % average error over all triangles
+    data_variance.avg_error = sum(data_variance.avg_sample_error)./length(data_variance.avg_sample_error);
+    % standard deviation of all triangles' error
+    data_variance.std_dev = sqrt(sum((data_variance.avg_sample_error-data_variance.avg_error).^2,'all')/length(data_variance.avg_sample_error));
+    % sample variance
+    for i = 1:size(data_variance.hf_density,1)
+       data_varaince.sample_variance =  
+    end
 end
 end %end of function

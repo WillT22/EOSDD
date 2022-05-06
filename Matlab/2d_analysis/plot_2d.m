@@ -57,6 +57,9 @@ if option == 0
 elseif option == 1
     faces_cdata = data_variance.sample_nhp_trig(:,sample_number);
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
+elseif option == 2
+    faces_cdata = abs(data_variance.sample_variance);
+    patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
 end
 
 xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])

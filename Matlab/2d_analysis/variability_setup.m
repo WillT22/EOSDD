@@ -39,7 +39,7 @@ dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,1000,seed);
 dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000,seed);
 %}
 %% Color Mapping Heat Flux Data %%
-%{
+%
 % PHI Lines
 PHI_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -53,63 +53,67 @@ for f = 1:size(PHI_lines_10,2)
         end
     end
 end
+clear f
+clear i
 % THETA Lines
 THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 
 % plotting color mapping of total heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
 
 % plotting color mapping of sample heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
-%}
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
 
-%% Plotting Variance
+%plotting color mapping of variance for sample heat flux
+%plot_2d(PHI_lines_10, THETA_lines_10,2,dv_2p)
+
+%% Plotting Error
 %{
 figure
 hold on
-plot(linspace(1,length(dv_10p.nhp_trig),length(dv_10p.nhp_trig)),dv_10p.sample_variance,'.','Color','red')
+plot(linspace(1,length(dv_10p.nhp_trig),length(dv_10p.nhp_trig)),dv_10p.sample_error,'.','Color','red')
 xlabel('Triangle Number');
-ylabel('Variance');
-title('10 Percent Data Variance')
+ylabel('Error');
+title('10 Percent Data Error')
 xlim([0,length(dv_10p.nhp_trig)]);
 %}
 %{
 figure
 hold on
-histogram(dv_10p.sample_variance,100000)
-xlabel('Variance');
-title('10 Percent Data Variance')
+histogram(dv_10p.sample_error,100000)
+xlabel('Error');
+title('10 Percent Data Error')
 ylim([0,150]);
 
 figure
 hold on
-histogram(dv_1p.sample_variance,100000)
-xlabel('Variance');
-title('1 Percent Data Variance')
+histogram(dv_1p.sample_error,100000)
+xlabel('Error');
+title('1 Percent Data Error')
 ylim([0,1500]);
 
 figure
 hold on
-histogram(dv_halfp.sample_variance,100000)
-xlabel('Variance');
-title('1/2 Percent Data Variance')
+histogram(dv_halfp.sample_error,100000)
+xlabel('Error');
+title('1/2 Percent Data Error')
 ylim([0,3000]);
 %}
-
+%{
 % get sample size
 x_vari = [size(dv_10p.sample_trig,1),size(dv_5p.sample_trig,1),...
     size(dv_2p.sample_trig,1),size(dv_1p.sample_trig,1),...
     size(dv_halfp.sample_trig,1),size(dv_fifthp.sample_trig,1),size(dv_tenthp.sample_trig,1)];
 % get average variance across all samples
-y_mean_vari = [dv_10p.avg_variance,dv_5p.avg_variance,dv_2p.avg_variance,...
-    dv_1p.avg_variance,dv_halfp.avg_variance,dv_fifthp.avg_variance,dv_tenthp.avg_variance];
+y_mean_vari = [dv_10p.avg_error,dv_5p.avg_error,dv_2p.avg_error,...
+    dv_1p.avg_error,dv_halfp.avg_error,dv_fifthp.avg_error,dv_tenthp.avg_error];
 % get standard deviation of variance across samples
 y_std_dev = [dv_10p.std_dev,dv_5p.std_dev,dv_2p.std_dev,dv_1p.std_dev,...
     dv_halfp.std_dev,dv_fifthp.std_dev,dv_tenthp.std_dev];
 % plot
 figure
 hold on
-plot(x_vari,y_mean_vari,'.','Color','black')
+plot(x_vari,abs(y_mean_vari),'.','Color','black')
 %errorbar(x_vari,y_mean_vari,y_std_dev,'.','Color','black');
 set(gca, 'XScale','log')
 xlim([100,30000]);
@@ -117,4 +121,7 @@ xlabel('Sample Size (Log Scale)');
 xticks(sort(x_vari));
 xticklabels({'200','400','1000','2000','4000','10000','20000'})
 ylabel('Error (Hit points/Triangle/m^2)');
-title('Variance v. Sample Size')
+title('Error v. Sample Size')
+%}
+
+%% Plotting Variance for number of hitpoints/cell

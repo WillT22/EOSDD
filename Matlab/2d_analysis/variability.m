@@ -90,9 +90,10 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
         % heat flux density
         % ratio of hit points per triangular section per meter^2
     data_variance.hf_density = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
+    % finding percentage of heat flux in a facet
+    data_variance.hf_ratio = data_variance.hf_density./sum(data_variance.hf_density);
     
-    
-%% Finding Variance for (nsamples) Samples of (percent_analysis)% of inputted data
+%% Finding Error and Variance for (nsamples) Samples of (percent_analysis)% of inputted data
 if percent_analysis == 0
     data_variance.sample_nhp_trig = data_variance.nhp_trig;
 elseif percent_analysis ~= 0
@@ -102,7 +103,7 @@ elseif percent_analysis ~= 0
     data_variance.sample_Theta = trig_assign_data.THETA_coords(rand_select_index);
     data_variance.sample_trig  = trig_assign_data.TRIG_assign(rand_select_index);
   
-    % Finding Variance for Samples %
+    % Finding Error and Variance for Samples %
     % count the number of hit points that are in each triangle
     for i = 1:nsamples
         data_variance.sample_nhp_trig(:,i) = histcounts(data_variance.sample_trig(:,i),index_vector)';
@@ -115,13 +116,17 @@ elseif percent_analysis ~= 0
     data_variance.sample_hf_density = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ nselection;
     % true error between sample and data heat flux density
     for i = 1:nsamples
-        data_variance.sample_variance(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
+        data_variance.sample_error(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
     end
-    % average variance over all samples
-    data_variance.avg_sample_variance = sum(data_variance.sample_variance,2)./nsamples;
-    % average variance over all triangles
-    data_variance.avg_variance = sum(data_variance.avg_sample_variance)./length(data_variance.avg_sample_variance);
-    % standard deviation of all triangles' variance
-    data_variance.std_dev = sqrt(sum((data_variance.avg_sample_variance-data_variance.avg_variance).^2,'all')/length(data_variance.avg_sample_variance));
+    % average error over all samples
+    data_variance.avg_sample_error = sum(data_variance.sample_error,2)./nsamples;
+    % average error over all triangles
+    data_variance.avg_error = sum(data_variance.avg_sample_error)./length(data_variance.avg_sample_error);
+    % standard deviation of all triangles' error
+    data_variance.std_dev = sqrt(sum((data_variance.avg_sample_error-data_variance.avg_error).^2,'all')/length(data_variance.avg_sample_error));
+    % variance from total value for every sample
+    for i = 1:size(data_variance.hf_density,1)
+       data_variance.sample_variance(i,1) =  sum(data_variance.sample_hf_density(i,:)-data_variance.hf_density(i))/(nsamples-1);
+    end
 end
 end %end of function
