@@ -26,7 +26,7 @@ ls_trig_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 pcs_10 = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10');
 % stating desired radomization stream (optional)
 seed = 128;
-%
+%{
 % running data heat flux density analysis
 dv_original = variability(fieldline_file,ls_trig_data,pcs_10);
 
@@ -53,14 +53,19 @@ for f = 1:size(PHI_lines_10,2)
         end
     end
 end
+clear f
+clear i
 % THETA Lines
 THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 
 % plotting color mapping of total heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
 
 % plotting color mapping of sample heat flux
-plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
+
+%plotting color mapping of variance for sample heat flux
+%plot_2d(PHI_lines_10, THETA_lines_10,2,dv_2p)
 %}
 
 %% Plotting Error
@@ -95,21 +100,21 @@ xlabel('Error');
 title('1/2 Percent Data Error')
 ylim([0,3000]);
 %}
-
+%{
 % get sample size
 x_vari = [size(dv_10p.sample_trig,1),size(dv_5p.sample_trig,1),...
     size(dv_2p.sample_trig,1),size(dv_1p.sample_trig,1),...
     size(dv_halfp.sample_trig,1),size(dv_fifthp.sample_trig,1),size(dv_tenthp.sample_trig,1)];
 % get average variance across all samples
 y_mean_vari = [dv_10p.avg_error,dv_5p.avg_error,dv_2p.avg_error,...
-    dv_1p.avg_error,dv_halfp.avg_error,dv_fifthp.avg_variance,dv_tenthp.avg_variance];
+    dv_1p.avg_error,dv_halfp.avg_error,dv_fifthp.avg_error,dv_tenthp.avg_error];
 % get standard deviation of variance across samples
 y_std_dev = [dv_10p.std_dev,dv_5p.std_dev,dv_2p.std_dev,dv_1p.std_dev,...
     dv_halfp.std_dev,dv_fifthp.std_dev,dv_tenthp.std_dev];
 % plot
 figure
 hold on
-plot(x_vari,y_mean_vari,'.','Color','black')
+plot(x_vari,abs(y_mean_vari),'.','Color','black')
 %errorbar(x_vari,y_mean_vari,y_std_dev,'.','Color','black');
 set(gca, 'XScale','log')
 xlim([100,30000]);
@@ -117,4 +122,25 @@ xlabel('Sample Size (Log Scale)');
 xticks(sort(x_vari));
 xticklabels({'200','400','1000','2000','4000','10000','20000'})
 ylabel('Error (Hit points/Triangle/m^2)');
-title('Variance v. Sample Size')
+title('Error v. Sample Size')
+%}
+
+%% Plotting Variance for number of hitpoints/cell
+% for every sample
+samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
+for i = 1:size(samples,2)
+    % temporary ordered array where maximum number will be deleted through each itteration
+    ordered = sortrows([linspace(1,size(samples(i).nhp_trig,1),size(samples(i).nhp_trig,1))',samples(i).nhp_trig],2);
+    % bin array to keep track of number of hit points and variance
+    samples(i).bin_array = linspace(1,max(ordered(:,2)),max(ordered(:,2)))';
+    for j = 1:size(samples(i).sample_nhp_trig,1)
+        [r,c] = find(ordered(:,2) == max(ordered(:,2)));
+        temp_sum = 0;
+        for k = 1:size(r,1)
+            temp_sum = temp_sum + sum((samples(i).sample_hf_density(ordered(r(k),1),:)-samples(i).hf_density(ordered(r(k),1))).^2);
+            ordered(r(k),2) = 0;
+        end
+        %disp(temp_sum);
+        samples(i).bin_array(max(b,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2));
+    end
+end

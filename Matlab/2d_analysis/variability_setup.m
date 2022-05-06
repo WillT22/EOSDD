@@ -39,7 +39,7 @@ dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,1000,seed);
 dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000,seed);
 %}
 %% Color Mapping Heat Flux Data %%
-%
+%{
 % PHI Lines
 PHI_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -66,6 +66,7 @@ THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 
 %plotting color mapping of variance for sample heat flux
 %plot_2d(PHI_lines_10, THETA_lines_10,2,dv_2p)
+%}
 
 %% Plotting Error
 %{
@@ -125,3 +126,21 @@ title('Error v. Sample Size')
 %}
 
 %% Plotting Variance for number of hitpoints/cell
+% for every sample
+samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
+for i = 1:size(samples,2)
+    % temporary ordered array where maximum number will be deleted through each itteration
+    ordered = sortrows([linspace(1,size(samples(i).nhp_trig,1),size(samples(i).nhp_trig,1))',samples(i).nhp_trig],2);
+    % bin array to keep track of number of hit points and variance
+    samples(i).bin_array = linspace(0,max(ordered(:,2)),max(ordered(:,2))+1)';
+    for j = 1:size(unique(ordered(:,2)),1);
+        [r,c] = find(ordered(:,2) == max(ordered(:,2)));
+        temp_sum = 0;
+        for k = 1:size(r,1)
+            temp_sum = temp_sum + sum((samples(i).sample_hf_density(ordered(r(k),1),:)-samples(i).hf_density(ordered(r(k),1))).^2);
+            ordered(r(k),2) = 0;
+        end
+        disp(temp_sum);
+        samples(i).bin_array(max(ordered(:,2))+1,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2)-1);
+    end
+end

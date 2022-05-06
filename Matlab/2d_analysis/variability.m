@@ -126,7 +126,7 @@ elseif percent_analysis ~= 0
     data_variance.std_dev = sqrt(sum((data_variance.avg_sample_error-data_variance.avg_error).^2,'all')/length(data_variance.avg_sample_error));
     % variance from total value for every sample
     for i = 1:size(data_variance.hf_density,1)
-       data_variance.sample_variance(i,1) =  sum(data_variance.sample_hf_density(i,:)-data_variance.hf_density(i))/(nsamples-1);
+       data_variance.sample_variance(i,1) =  sum((data_variance.sample_hf_density(i,:)-data_variance.hf_density(i)).^2)/(nsamples-1);
     end
 end
 end %end of function
