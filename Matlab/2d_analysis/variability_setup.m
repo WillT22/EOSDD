@@ -126,6 +126,7 @@ title('Error v. Sample Size')
 %}
 
 %% Plotting Variance for number of hitpoints/cell
+%
 % for every sample
 samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
 for i = 1:size(samples,2)
@@ -152,3 +153,4 @@ for i = 1:size(samples,2)
     xlabel('Number of Hitpoints in a Triangle');
     ylabel('Variance of Heat Flux Density');
 end
+%}
