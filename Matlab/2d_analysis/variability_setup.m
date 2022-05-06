@@ -134,13 +134,21 @@ for i = 1:size(samples,2)
     % bin array to keep track of number of hit points and variance
     samples(i).bin_array = linspace(0,max(ordered(:,2)),max(ordered(:,2))+1)';
     for j = 1:size(unique(ordered(:,2)),1);
+        % find the index for every existing max
         [r,c] = find(ordered(:,2) == max(ordered(:,2)));
         temp_sum = 0;
         for k = 1:size(r,1)
+            % sum the square of the difference between the sample hfd and the total hfd
             temp_sum = temp_sum + sum((samples(i).sample_hf_density(ordered(r(k),1),:)-samples(i).hf_density(ordered(r(k),1))).^2);
-            ordered(r(k),2) = 0;
         end
-        disp(temp_sum);
+        % remove maximum nhp and corresponding index
+        ordered(r,:) = [];
+        % divide by n-1 to find variance
         samples(i).bin_array(max(ordered(:,2))+1,2) = temp_sum/(size(r,1)*size(samples(i).sample_nhp_trig,2)-1);
     end
+    figure
+    hold on
+    plot(samples(i).bin_array(:,1),samples(i).bin_array(:,2),'.','Color','red');
+    xlabel('Number of Hitpoints in a Triangle');
+    ylabel('Variance of Heat Flux Density');
 end
