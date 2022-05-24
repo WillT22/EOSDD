@@ -94,9 +94,7 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
     data_variance.hf_percentage = data_variance.hf_density./sum(data_variance.hf_density).*100;
     
 %% Finding Error and Variance for (nsamples) Samples of (percent_analysis)% of inputted data
-if percent_analysis == 0
-    data_variance.sample_nhp_trig = data_variance.nhp_trig;
-elseif percent_analysis ~= 0
+if percent_analysis ~= 0
     nselection  = ceil(ndata_points * percent_analysis);
     rand_select_index = randi(rand_stream, ndata_points,[nselection,nsamples]);
     data_variance.sample_Phi   = trig_assign_data.PHI_coords(rand_select_index); 

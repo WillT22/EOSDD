@@ -15,6 +15,7 @@ fldlns_Cbar5_r_10 = read_fieldlines('../../../p/stellopt/ANALYSIS/wteague/flux_s
 %}
 
 %% Setting up data for variability function %%
+%{
 % compiling hit point data into a single matrix for used in functions
 fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
@@ -26,7 +27,7 @@ ls_trig_data = importdata('./EOSDD/Python/Theta_Cbar_10.dat');
 pcs_10 = toroidal_mesh('../../p/stellopt/ANALYSIS/wteague/flux_surface/nvac_fldlns/fb_bnorm/nescin.fb_10');
 % stating desired radomization stream (optional)
 seed = 128;
-%{
+
 % running data heat flux density analysis
 dv_original = variability(fieldline_file,ls_trig_data,pcs_10);
 
@@ -39,7 +40,7 @@ dv_fifthp = variability(fieldline_file,ls_trig_data,pcs_10,0.2,1000,seed);
 dv_tenthp = variability(fieldline_file,ls_trig_data,pcs_10,0.1,1000,seed);
 %}
 %% Color Mapping Heat Flux Data %%
-%{
+%
 % PHI Lines
 PHI_lines_10 = [];
 for i = 1:length(fieldline_file)
@@ -59,12 +60,16 @@ clear i
 THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 
 % plotting color mapping of total heat flux
-%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original)
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original.hf_density)
+
+% plotting color mapping of heat flux density percentage
+%plot_2d(PHI_lines_10, THETA_lines_10,0,dv_original.hf_percentage);
+%title('Heat Flux Density');
 
 % plotting color mapping of sample heat flux
 %plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
 
-%plotting color mapping of variance for sample heat flux
+%plotting color mapping of variance for sample heat flux density
 %plot_2d(PHI_lines_10, THETA_lines_10,2,dv_2p)
 %}
 
@@ -126,7 +131,7 @@ title('Error v. Sample Size')
 %}
 
 %% Plotting Variance for number of hitpoints/cell
-%
+%{
 % for every sample
 samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
 for i = 1:size(samples,2)
@@ -149,11 +154,28 @@ for i = 1:size(samples,2)
     end
     var_nonzero = samples(i).bin_array(:,2);
     var_nonzero(var_nonzero==0) = nan;
-    
+%{    
     figure
     hold on
     plot(samples(i).bin_array(:,1),var_nonzero,'.','Color','red');
     xlabel('Number of Hitpoints in a Triangle');
     ylabel('Variance of Heat Flux Density');
+%}   
+    % plotting the largest variance v. percentage of data
+    per_data(i) = sum(samples(i).sample_nhp_trig(:,1))/sum(samples(i).nhp_trig)*100;
+    max_var(i) = max(abs(var_nonzero));
 end
+
+figure
+hold on
+plot(per_data,max_var,'-o','Color','red');
+xlabel('Percentage of Total Data');
+ylabel('Maximum Variance');
 %}
+
+%% Color Mapping for Heat Flux Density Standard Deviations
+% for every sample
+samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
+for i = 1:size(samples,2)
+    
+end

@@ -1,13 +1,13 @@
-function plot_2d(Phi_lines, Theta_lines, option, data_variance, sample_number)
+function plot_2d(Phi_lines, Theta_lines, option, data_variance_data, sample_number)
 
 %%%%%%%%%%%%%%% Default Parameters %%%%%%%%%%%%%%
   switch nargin         % creates a few default options
       case 2 
           option = 0;
-          data_variance = [];
+          data_variance_data = [];
           sample_number = 0;
       case 3
-          data_variance = [];
+          data_variance_data = [];
           sample_number = 0;
       case 4
           sample_number = 1;
@@ -51,17 +51,14 @@ figure;
     
 % plotting connected vertices in faces
 if option == 0
-    patch('Faces',grid.faces,'Vertices',grid.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
-    hold on
-    plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
+    faces_cdata = data_variance_data;
+    patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
+% color mapping of number of hit points per triangle
 elseif option == 1
-    faces_cdata = data_variance.sample_nhp_trig(:,sample_number);
+    faces_cdata = data_variance_data(:,sample_number);
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
-elseif option == 2
-    faces_cdata = abs(data_variance.sample_variance);
-    patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
-end
 
+colorbar
 xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])
 xticklabels({'0', '\pi/4', '\pi/2', '3\pi/4', '\pi', '5\pi/4', '3\pi/2', '7\pi/4', '2\pi'})
 xlim([0,2*pi]);
@@ -71,3 +68,4 @@ ylim([0,2*pi]);
 daspect([1 1 1]);
 xlabel('Phi');
 ylabel('Theta');
+end
