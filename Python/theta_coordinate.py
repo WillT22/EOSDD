@@ -32,52 +32,52 @@ data_file = "toroidal_theta_test.dat"
 
 ### Creating Functions to be used in Least Squares Calculation ###
 # creating functions for R_s and Z_s
-def R_s(Theta_s,M,N,Phi_h):  	
+def R_s(Theta,M,N,Phi_h):  	
     #initializing arrays for storing outputs of individual elements and summations
     R_s_arr = np.empty(len(M)) 
     for mode in range(len(M)):           
         # Using s=3 and p=1
-        R_s_arr[mode] = crc2[mode] * np.cos(M[mode] * Theta_s + 3*N[mode]*Phi_h[coord,file_number])    
+        R_s_arr[mode] = crc2[mode] * np.cos(M[mode] * Theta + 3*N[mode]*Phi_h[coord,file_number])    
     R_s_sum = sum(R_s_arr)  
     return R_s_sum
     
-def Z_s(Theta_s,M,N,Phi_h):  
+def Z_s(Theta,M,N,Phi_h):  
     #initializing arrays for storing outputs of individual elements and summations
     Z_s_arr = np.empty(len(M)) 
     for mode in range(len(M)):            
         # Using s=3 and p=1
-        Z_s_arr[mode] = czs2[mode] * np.sin(M[mode] * Theta_s + 3*N[mode]*Phi_h[coord,file_number]);    
+        Z_s_arr[mode] = czs2[mode] * np.sin(M[mode] * Theta + 3*N[mode]*Phi_h[coord,file_number]);    
     Z_s_sum = sum(Z_s_arr)
     return Z_s_sum
 
 # defining the function that will be used in the least squares method
-def chi_squared(Theta_s):
-    return np.array([np.subtract(R_s(Theta_s,M,N,Phi_h),R_h[coord,file_number]),np.subtract(Z_s(Theta_s,M,N,Phi_h),Z_h[coord,file_number])])
+def chi_squared(Theta):
+    return np.array([np.subtract(R_s(Theta,M,N,Phi_h),R_h[coord,file_number]),np.subtract(Z_s(Theta,M,N,Phi_h),Z_h[coord,file_number])])
 
 ### Creating Functions to be used in Jacobian Variable ###
-# defining the derivatives with repsect to Theta_s of R_s
-def R_s_deriv(Theta_s,M,N,Phi_h):
+# defining the derivatives with repsect to Theta of R_s
+def R_s_deriv(Theta,M,N,Phi_h):
     #initializing arrays for storing outputs of individual elements and summations
     R_s_deriv_arr = np.empty(len(M))
     for mode in range(len(M)):
         # Using s=3 and p=1
-        R_s_deriv_arr[mode] = -crc2[mode] * M[mode] * np.sin(M[mode] * Theta_s + 3*N[mode] * Phi_h[coord,file_number]);
+        R_s_deriv_arr[mode] = -crc2[mode] * M[mode] * np.sin(M[mode] * Theta + 3*N[mode] * Phi_h[coord,file_number]);
     R_s_deriv_fun = sum(R_s_deriv_arr)
     return R_s_deriv_fun
 
-# defining the derivatives with repsect to Theta_s of Z_s
-def Z_s_deriv(Theta_s,M,N,Phi_h):
+# defining the derivatives with repsect to Theta of Z_s
+def Z_s_deriv(Theta,M,N,Phi_h):
     #initializing arrays for storing outputs of individual elements and summations
     Z_s_deriv_arr = np.empty(len(M))
     for mode in range(len(M)):
         # Using s=3 and p=1
-        Z_s_deriv_arr[mode] = czs2[mode] * M[mode] * np.cos(M[mode] * Theta_s + 3*N[mode] * Phi_h[coord,file_number]);
+        Z_s_deriv_arr[mode] = czs2[mode] * M[mode] * np.cos(M[mode] * Theta + 3*N[mode] * Phi_h[coord,file_number]);
     Z_s_deriv_fun = sum(Z_s_deriv_arr)
     return Z_s_deriv_fun
 
 # defining the Jacobian that will be used in the least squares method
-def chi_squared_jac(Theta_s):
-    return np.array(([R_s_deriv(Theta_s,M,N,Phi_h)],[Z_s_deriv(Theta_s,M,N,Phi_h)])) 
+def chi_squared_jac(Theta):
+    return np.array(([R_s_deriv(Theta,M,N,Phi_h)],[Z_s_deriv(Theta,M,N,Phi_h)])) 
 
 
 ### Using Least Squares Function ###
@@ -91,17 +91,17 @@ except IndexError: # when there is only one column
     R_h = R_h.reshape((Phi_h.shape[0],1))
     Z_h = Z_h.reshape((Phi_h.shape[0],1))
     Theta_approx = Theta_approx.reshape((Theta_approx.shape[0],1))
-Theta_s_result = np.empty([Phi_h.shape[0],file_columns]) # initializing final array based off of input file size
+Theta_result = np.empty([Phi_h.shape[0],file_columns]) # initializing final array based off of input file size
 
-# using the least squares method to find the closest Theta_s
+# using the least squares method to find the closest Theta
 print('finding least square')
-Theta_s_result = np.empty_like(Phi_h)
+Theta_result = np.empty_like(Phi_h)
 for file_number in range(Phi_h.shape[1]):
     print('file number', file_number)
     for coord in range(Phi_h.shape[0]):    
         if coord % 100 == 0:
             print('computing theta', coord)
         Theta_result_temp = least_squares(chi_squared, Theta_approx[coord,file_number], chi_squared_jac, method='lm')
-        Theta_s_result[coord,file_number] = Theta_result_temp.x
+        Theta_result[coord,file_number] = Theta_result_temp.x
 
-np.savetxt(data_file,Theta_s_result)
+np.savetxt(data_file,Theta_result)
