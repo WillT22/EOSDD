@@ -172,10 +172,3 @@ plot(per_data,max_var,'-o','Color','red');
 xlabel('Percentage of Total Data');
 ylabel('Maximum Variance');
 %}
-
-%% Color Mapping for Heat Flux Density Standard Deviations
-% for every sample
-samples = [dv_tenthp,dv_fifthp,dv_halfp,dv_1p,dv_2p,dv_5p,dv_10p];
-for i = 1:size(samples,2)
-    
-end
