@@ -63,14 +63,14 @@ THETA_lines_10 = importdata('EOSDD/Python/Theta_Cbar_10.dat');
 %plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original.hf_density)
 
 % plotting color mapping of heat flux density percentage
-%plot_2d(PHI_lines_10, THETA_lines_10,0,dv_original.hf_percentage);
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_original.hf_percentage);
 %title('Heat Flux Density');
 
 % plotting color mapping of sample heat flux
-%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_tenthp,2)
+%plot_2d(PHI_lines_10, THETA_lines_10,2,dv_tenthp,2)
 
 %plotting color mapping of variance for sample heat flux density
-%plot_2d(PHI_lines_10, THETA_lines_10,2,dv_2p)
+%plot_2d(PHI_lines_10, THETA_lines_10,1,dv_2p)
 %}
 
 %% Plotting Error
