@@ -57,12 +57,13 @@ if option == 0
 elseif option == 1
     faces_cdata = data_variance_data;
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
+    colorbar
 % color mapping of number of hit points per triangle
 elseif option == 2
     faces_cdata = data_variance_data(:,sample_number);
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
+    colorbar
 
-colorbar
 xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])
 xticklabels({'0', '\pi/4', '\pi/2', '3\pi/4', '\pi', '5\pi/4', '3\pi/2', '7\pi/4', '2\pi'})
 xlim([0,2*pi]);
