@@ -51,10 +51,14 @@ figure;
     
 % plotting connected vertices in faces
 if option == 0
+    patch('Faces',grid.faces,'Vertices',grid.vertices, 'EdgeColor', [0.6 0.6 0.6], 'FaceColor', [1 1 1]);
+    hold on
+    plot(Phi_lines, Theta_lines, 'linestyle', 'none', 'marker', '.','color','red');
+elseif option == 1
     faces_cdata = data_variance_data;
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
 % color mapping of number of hit points per triangle
-elseif option == 1
+elseif option == 2
     faces_cdata = data_variance_data(:,sample_number);
     patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
 
