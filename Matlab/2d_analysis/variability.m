@@ -91,7 +91,7 @@ trig_assign_data.TRIG_assign = ((trig_assign_data.PHI_assign-1) * t_div + trig_a
         % ratio of hit points per triangular section per meter^2
     data_variance.hf_density = data_variance.nhp_trig ./ vessel_data.Areas ./ ndata_points;
     % finding percentage of heat flux in a facet
-    data_variance.hf_percentage = data_variance.hf_density./sum(data_variance.hf_density).*100;
+    data_variance.hf_percentage = data_variance.hf_density.*100;
     
 %% Finding Error and Variance for (nsamples) Samples of (percent_analysis)% of inputted data
 if percent_analysis ~= 0
@@ -113,7 +113,7 @@ if percent_analysis ~= 0
         % ratio of hit points per triangular section per meter^2
     data_variance.sample_hf_density = data_variance.sample_nhp_trig ./ vessel_data.Areas ./ nselection;
     % finding percentage of heat flux in a facet
-    data_variance.sample_hf_percentage = data_variance.sample_hf_density./sum(data_variance.sample_hf_density).*100;
+    data_variance.sample_hf_percentage = data_variance.sample_hf_density.*100;
     % true error between sample and data heat flux density
     for i = 1:nsamples
         data_variance.sample_error(:,i)= data_variance.hf_density - data_variance.sample_hf_density(:,i);
