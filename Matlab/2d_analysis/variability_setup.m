@@ -15,7 +15,7 @@ fldlns_Cbar5_r_10 = read_fieldlines('../../../p/stellopt/ANALYSIS/wteague/flux_s
 %}
 
 %% Setting up data for variability function %%
-%{
+%
 % compiling hit point data into a single matrix for used in functions
 fieldline_file = [fldlns_Cbar1_f_10, fldlns_Cbar1_r_10, fldlns_Cbar2_f_10,...
     fldlns_Cbar2_r_10, fldlns_Cbar3_f_10, fldlns_Cbar3_r_10,...
