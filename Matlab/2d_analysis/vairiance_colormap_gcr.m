@@ -6,7 +6,7 @@ titles = [0.1,0.2,0.5,1,2,5,10];
 
 for i = 1:size(sample_files,2)
    fig = figure;
-   faces_cdata = abs(sample_files(i).hfp_variance);
+   faces_cdata = abs(sample_files(i).hfd_variance);
    patch('Faces',grid.faces,'Vertices',grid.vertices,'FaceVertexCData',faces_cdata,'FaceColor','flat','EdgeColor','None');
    colorbar
    xticks([0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4 2*pi])
@@ -18,7 +18,7 @@ for i = 1:size(sample_files,2)
    daspect([2 2 2]);
    xlabel('Phi');
    ylabel('Theta');
-   title(sprintf('Heat Flux Density Percentage Variance for %2.1f Percent of Data',titles(i)));
+   title(sprintf('Heat Flux Density Variance for %2.1f Percent of Data',titles(i)));
    frame = getframe(fig);
    im{i} = frame2im(frame);
 end
